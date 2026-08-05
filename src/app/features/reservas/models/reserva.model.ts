@@ -1,3 +1,5 @@
+import { Viaje } from '../../viajes/models/viaje.model';
+
 export type EstadoReserva = 'PENDIENTE' | 'CONFIRMADA' | 'UTILIZADA' | 'CANCELADA';
 
 export interface Reserva {
@@ -7,4 +9,5 @@ export interface Reserva {
   estado?: EstadoReserva;
   id_usuario?: number;
   id_viaje: number;
+  Viaje?: Viaje | null;
 }

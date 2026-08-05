@@ -1,0 +1,65 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">{{ auth.esAdministrador() ? 'Reservas' : 'Mis Reservas' }}</h1>
+    <a class="btn btn--primary" routerLink="nuevo">+ Nueva reserva</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando reservas…</div>
+  } @else if (reservas().length === 0) {
+    <div class="empty-state">No hay reservas registradas.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Viaje</th>
+            <th>Fecha reserva</th>
+            <th>Asiento</th>
+            <th>Estado</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reserva of reservas(); track reserva.id_reserva) {
+            <tr>
+              <td>{{ nombreViaje(reserva) }}</td>
+<td>{{ fechaReserva(reserva.fecha) }}</td>
+              <td>{{ reserva.numero_asiento }}</td>
+              <td>
+                <span [class]="estadoBadge(reserva.estado)">
+                  {{ reserva.estado ?? 'SIN ESTADO' }}
+                </span>
+              </td>
+              <td class="table__acciones">
+                @if (puedeCancelar(reserva)) {
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirCancelar(reserva)">
+                    Cancelar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (dialogoVisible() && reservaACancelar()) {
+  <app-confirm-dialog
+    titulo="Cancelar reserva"
+    [mensaje]="
+      '¿Estás seguro de cancelar la reserva del asiento ' +
+      (reservaACancelar()?.numero_asiento ?? '') +
+      '? El cupo será devuelto al viaje.'
+    "
+    textoConfirmar="Cancelar"
+    (confirmado)="confirmarCancelacion()"
+    (cancelado)="cancelarDialogo()"
+  />
+}
