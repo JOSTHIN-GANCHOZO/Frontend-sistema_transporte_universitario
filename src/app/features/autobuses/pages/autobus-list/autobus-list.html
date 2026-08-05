@@ -1,1 +1,70 @@
-<p>autobus-list works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Autobuses</h1>
+    <a class="btn btn--primary" routerLink="nuevo">+ Nuevo autobús</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando autobuses…</div>
+  } @else if (autobuses().length === 0) {
+    <div class="empty-state">No hay autobuses registrados.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Placa</th>
+            <th>Número interno</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Capacidad</th>
+            <th>Estado</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (autobus of autobuses(); track autobus.id_autobus) {
+            <tr>
+              <td>{{ autobus.placa }}</td>
+              <td>{{ autobus.numero_interno }}</td>
+              <td>{{ autobus.marca ?? '—' }}</td>
+              <td>{{ autobus.modelo ?? '—' }}</td>
+              <td>{{ autobus.anio ?? '—' }}</td>
+              <td>{{ autobus.capacidad_maxima }}</td>
+              <td>
+                <span [class]="estadoBadge(autobus.estado)">
+                  {{ autobus.estado ?? 'SIN ESTADO' }}
+                </span>
+              </td>
+              <td class="table__acciones">
+                <a class="btn btn--link" [routerLink]="[autobus.id_autobus]">Editar</a>
+                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(autobus)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (dialogoVisible() && autobusAEliminar()) {
+  <app-confirm-dialog
+    titulo="Eliminar autobús"
+    [mensaje]="
+      '¿Estás seguro de eliminar el autobús ' +
+      (autobusAEliminar()?.placa ?? '') +
+      '? Esta acción no se puede deshacer.'
+    "
+    textoConfirmar="Eliminar"
+    (confirmado)="confirmarEliminacion()"
+    (cancelado)="cancelarEliminacion()"
+  />
+}

@@ -27,6 +27,24 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/usuarios/usuarios.routes').then((m) => m.usuariosRoutes),
       },
+      {
+        path: 'autobuses',
+        canActivate: [roleGuard],
+        loadChildren: () =>
+          import('./features/autobuses/autobuses.routes').then((m) => m.autobusesRoutes),
+      },
+      {
+        path: 'conductores',
+        canActivate: [roleGuard],
+        loadChildren: () =>
+          import('./features/conductores/conductores.routes').then((m) => m.conductoresRoutes),
+      },
+      {
+        path: 'viajes',
+        canActivate: [roleGuard],
+        loadChildren: () =>
+          import('./features/viajes/viajes.routes').then((m) => m.viajesRoutes),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
