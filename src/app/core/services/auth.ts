@@ -41,7 +41,11 @@ export class Auth {
   }
 
   esAdministrador(): boolean {
-    return this.usuarioActual()?.Rol?.nombre === 'ADMINISTRADOR';
+    return this.usuarioActual()?.Rol?.nombre === 'ADMINISTRATIVO';
+  }
+
+  rolActual(): string | null {
+    return this.usuarioActual()?.Rol?.nombre ?? null;
   }
 
   private leerUsuarioGuardado(): Usuario | null {
