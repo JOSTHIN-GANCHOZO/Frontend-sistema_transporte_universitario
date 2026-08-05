@@ -20,7 +20,7 @@ export const routes: Routes = [
     component: MainLayout,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
+      { path: '', redirectTo: 'viajes', pathMatch: 'full' },
       {
         path: 'usuarios',
         canActivate: [roleGuard],
@@ -41,9 +41,13 @@ export const routes: Routes = [
       },
       {
         path: 'viajes',
-        canActivate: [roleGuard],
         loadChildren: () =>
           import('./features/viajes/viajes.routes').then((m) => m.viajesRoutes),
+      },
+      {
+        path: 'reservas',
+        loadChildren: () =>
+          import('./features/reservas/reservas.routes').then((m) => m.reservasRoutes),
       },
     ],
   },
