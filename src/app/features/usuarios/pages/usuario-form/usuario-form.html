@@ -92,6 +92,7 @@
         <div class="form__field">
           <label class="form__label" for="tipo_usuario">Tipo de usuario *</label>
           <select class="form__input" id="tipo_usuario" formControlName="tipo_usuario">
+            <option value="" disabled>Selecciona un tipo</option>
             @for (tipo of tiposUsuario; track tipo) {
               <option [value]="tipo">{{ tipo }}</option>
             }

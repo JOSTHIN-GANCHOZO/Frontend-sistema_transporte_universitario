@@ -31,7 +31,7 @@ export class UsuarioForm {
     apellidos: ['', Validators.required],
     correo: ['', [Validators.required, Validators.email]],
     telefono: [''],
-    tipo_usuario: ['ESTUDIANTE', Validators.required],
+    tipo_usuario: ['', Validators.required],
     id_rol: [null as number | null, Validators.required],
   });
 
@@ -39,6 +39,18 @@ export class UsuarioForm {
     this.usuarioService.obtenerRoles().subscribe({
       next: (roles) => this.roles.set(roles),
       error: () => this.error.set('No se pudieron cargar los roles.'),
+    });
+
+    this.form.controls.id_rol.valueChanges.subscribe((idRol) => {
+      const rol = this.roles().find((r) => r.id_rol === idRol);
+      if (!rol) {
+        return;
+      }
+      if (rol.nombre === 'ADMINISTRATIVO') {
+        this.form.controls.tipo_usuario.setValue('ADMINISTRATIVO');
+      } else if (rol.nombre === 'PASAJERO' && this.form.controls.tipo_usuario.value === 'ADMINISTRATIVO') {
+        this.form.controls.tipo_usuario.setValue('ESTUDIANTE');
+      }
     });
 
     const id = this.route.snapshot.paramMap.get('id');
