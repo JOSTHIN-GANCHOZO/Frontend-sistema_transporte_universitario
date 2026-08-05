@@ -1,33 +1,35 @@
-<aside class="sidebar">
+﻿<aside class="sidebar">
   <div class="sidebar__brand">
     <span class="sidebar__mark">U</span>
     <span class="sidebar__brand-text">Unibus</span>
   </div>
   <nav class="sidebar__nav">
-    <a
-      class="sidebar__link"
-      routerLink="/main/usuarios"
-      routerLinkActive="sidebar__link--active"
-      [routerLinkActiveOptions]="{ exact: false }"
-    >
-      Usuarios
-    </a>
-    <a
-      class="sidebar__link"
-      routerLink="/main/autobuses"
-      routerLinkActive="sidebar__link--active"
-      [routerLinkActiveOptions]="{ exact: false }"
-    >
-      Autobuses
-    </a>
-    <a
-      class="sidebar__link"
-      routerLink="/main/conductores"
-      routerLinkActive="sidebar__link--active"
-      [routerLinkActiveOptions]="{ exact: false }"
-    >
-      Conductores
-    </a>
+    @if (esAdministrador()) {
+      <a
+        class="sidebar__link"
+        routerLink="/main/usuarios"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        Usuarios
+      </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/autobuses"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        Autobuses
+      </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/conductores"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        Conductores
+      </a>
+    }
     <a
       class="sidebar__link"
       routerLink="/main/viajes"
@@ -35,6 +37,18 @@
       [routerLinkActiveOptions]="{ exact: false }"
     >
       Viajes
+    </a>
+    <a
+      class="sidebar__link"
+      routerLink="/main/reservas"
+      routerLinkActive="sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      @if (esAdministrador()) {
+        Reservas
+      } @else {
+        Mis Reservas
+      }
     </a>
   </nav>
 </aside>
