@@ -87,4 +87,8 @@ export class AutobusList {
         return 'badge badge-info';
     }
   }
+
+  anio(autobus: Autobus): number | undefined {
+    return autobus.año;
+  }
 }

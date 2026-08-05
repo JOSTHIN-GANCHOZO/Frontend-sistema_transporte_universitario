@@ -27,7 +27,7 @@ export class AutobusForm {
     numero_interno: ['', Validators.required],
     marca: [''],
     modelo: [''],
-    anio: [null as number | null],
+    año: [null as number | null],
     capacidad_maxima: [null as number | null, [Validators.required, Validators.min(1)]],
     estado: ['DISPONIBLE' as EstadoAutobus, Validators.required],
   });
@@ -50,7 +50,7 @@ export class AutobusForm {
           numero_interno: autobus.numero_interno,
           marca: autobus.marca ?? '',
           modelo: autobus.modelo ?? '',
-          anio: autobus.anio ?? null,
+          año: autobus.año ?? null,
           capacidad_maxima: autobus.capacidad_maxima,
           estado: autobus.estado ?? 'DISPONIBLE',
         });
@@ -78,7 +78,7 @@ export class AutobusForm {
       numero_interno: datos.numero_interno ?? '',
       marca: datos.marca || undefined,
       modelo: datos.modelo || undefined,
-      anio: datos.anio ?? undefined,
+      año: datos.año ?? undefined,
       capacidad_maxima: Number(datos.capacidad_maxima),
       estado: (datos.estado as EstadoAutobus) ?? 'DISPONIBLE',
     };

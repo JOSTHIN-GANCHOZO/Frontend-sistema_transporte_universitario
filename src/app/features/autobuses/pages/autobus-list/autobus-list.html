@@ -34,7 +34,7 @@
               <td>{{ autobus.numero_interno }}</td>
               <td>{{ autobus.marca ?? '—' }}</td>
               <td>{{ autobus.modelo ?? '—' }}</td>
-              <td>{{ autobus.anio ?? '—' }}</td>
+              <td>{{ anio(autobus) ?? '—' }}</td>
               <td>{{ autobus.capacidad_maxima }}</td>
               <td>
                 <span [class]="estadoBadge(autobus.estado)">

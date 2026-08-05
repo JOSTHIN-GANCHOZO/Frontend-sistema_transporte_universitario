@@ -6,7 +6,7 @@ export interface Autobus {
   numero_interno: string;
   marca?: string;
   modelo?: string;
-  anio?: number;
+  año?: number;
   capacidad_maxima: number;
   estado?: EstadoAutobus;
 }
