@@ -1,1 +1,13 @@
-<p>navbar works!</p>
+<header class="navbar">
+  <div class="navbar__brand">
+    <span class="navbar__mark">U</span>
+    <span class="navbar__brand-text">Unibus</span>
+  </div>
+  <div class="navbar__user">
+    <div class="navbar__usuario">
+      <span class="navbar__nombre">{{ usuarioActual()?.nombres }} {{ usuarioActual()?.apellidos }}</span>
+      <span class="navbar__rol">{{ usuarioActual()?.Rol?.nombre }}</span>
+    </div>
+    <button class="navbar__logout" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</header>

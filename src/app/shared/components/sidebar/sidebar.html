@@ -1,1 +1,16 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+  <div class="sidebar__brand">
+    <span class="sidebar__mark">U</span>
+    <span class="sidebar__brand-text">Unibus</span>
+  </div>
+  <nav class="sidebar__nav">
+    <a
+      class="sidebar__link"
+      routerLink="/main/usuarios"
+      routerLinkActive="sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      Usuarios
+    </a>
+  </nav>
+</aside>

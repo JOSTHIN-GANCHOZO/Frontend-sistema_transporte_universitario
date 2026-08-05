@@ -1,1 +1,80 @@
-<p>login works!</p>
+<div class="login">
+  <aside class="login__brand">
+    <div class="login__brand-inner">
+      <div class="login__logo">
+        <span class="login__logo-mark">U</span>
+        <span class="login__logo-text">Unibus</span>
+      </div>
+      <h1 class="login__heading">Movilidad universitaria, gestionada con orden.</h1>
+      <p class="login__description">
+        Unibus es la plataforma institucional para la administración del transporte
+        universitario: gestión de usuarios, viajes, rutas, reservas y autobuses en un
+        solo lugar. Acceso restringido al personal autorizado de la institución.
+      </p>
+      <ul class="login__features">
+        <li>Gestión centralizada de usuarios y credenciales</li>
+        <li>Control de viajes, rutas y reservas</li>
+        <li>Seguridad y trazabilidad de accesos</li>
+      </ul>
+    </div>
+    <div class="login__brand-footer">
+      &copy; {{ anio }} Unibus &mdash; Sistema de Transporte Universitario
+    </div>
+  </aside>
+
+  <main class="login__panel">
+    <form class="login__card" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="login__mobile-logo">
+        <span class="login__logo-mark">U</span>
+        <span class="login__logo-text">Unibus</span>
+      </div>
+
+      <h2 class="login__title">Iniciar sesión</h2>
+      <p class="login__subtitle">Accede con tus credenciales institucionales para continuar.</p>
+
+      @if (error()) {
+        <div class="login__error">{{ error() }}</div>
+      }
+
+      <label class="login__label" for="correo">Correo electrónico</label>
+      <input
+        class="login__input"
+        id="correo"
+        type="email"
+        formControlName="correo"
+        placeholder="tu@universidad.edu"
+        autocomplete="username"
+      />
+      @if (form.controls.correo.invalid && form.controls.correo.touched) {
+        <span class="login__field-error">
+          {{
+            form.controls.correo.hasError('required')
+              ? 'El correo es obligatorio.'
+              : 'Ingresa un correo válido.'
+          }}
+        </span>
+      }
+
+      <label class="login__label" for="password">Contraseña</label>
+      <input
+        class="login__input"
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="••••••••"
+        autocomplete="current-password"
+      />
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <span class="login__field-error">La contraseña es obligatoria.</span>
+      }
+
+      <button class="login__button" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Ingresando…' : 'Ingresar' }}
+      </button>
+
+      <p class="login__help">
+        ¿No puedes acceder? Contacta al administrador del sistema para restablecer tu credencial.
+      </p>
+    </form>
+  </main>
+</div>

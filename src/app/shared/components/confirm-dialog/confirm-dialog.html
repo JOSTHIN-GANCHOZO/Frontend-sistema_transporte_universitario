@@ -1,1 +1,14 @@
-<p>confirm-dialog works!</p>
+<div class="dialog">
+  <div class="dialog__card">
+    <h2 class="dialog__title">{{ titulo() }}</h2>
+    <p class="dialog__message">{{ mensaje() }}</p>
+    <div class="dialog__actions">
+      <button class="btn btn--secondary" type="button" (click)="cancelado.emit()">
+        Cancelar
+      </button>
+      <button class="btn btn--danger" type="button" (click)="confirmado.emit()">
+        {{ textoConfirmar() }}
+      </button>
+    </div>
+  </div>
+</div>
