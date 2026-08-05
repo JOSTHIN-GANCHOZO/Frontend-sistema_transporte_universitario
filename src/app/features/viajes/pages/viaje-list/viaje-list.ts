@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { Viaje } from '../../models/viaje.model';
 import { ViajeService } from '../../services/viaje';
 
 @Component({
   selector: 'app-viaje-list',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './viaje-list.html',
 })
 export class ViajeList {

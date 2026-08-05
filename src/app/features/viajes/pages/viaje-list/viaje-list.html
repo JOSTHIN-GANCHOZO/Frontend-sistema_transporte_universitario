@@ -23,6 +23,7 @@
             <th>Conductor</th>
             <th>Cupos disponibles</th>
             <th>Estado</th>
+            <th class="table__acciones">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -38,6 +39,17 @@
                 <span [class]="estadoBadge(viaje.estado)">
                   {{ viaje.estado ?? 'SIN ESTADO' }}
                 </span>
+              </td>
+              <td class="table__acciones">
+                @if (viaje.estado === 'PROGRAMADO' && (viaje.cupos_disponibles ?? 0) > 0) {
+                  <a
+                    class="btn btn--link"
+                    [routerLink]="['/main/reservas/nuevo']"
+                    [queryParams]="{ id_viaje: viaje.id_viaje }"
+                  >
+                    Reservar
+                  </a>
+                }
               </td>
             </tr>
           }
