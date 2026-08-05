@@ -177,6 +177,36 @@
   outline-offset: -1px;
 }
 
+.login__password {
+  position: relative;
+  margin-bottom: 0.4rem;
+}
+
+.login__password .login__input {
+  padding-right: 2.6rem;
+  margin-bottom: 0;
+}
+
+.login__eye {
+  position: absolute;
+  top: 50%;
+  right: 0.55rem;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.login__eye:hover {
+  color: var(--color-primary);
+}
+
 .login__field-error {
   display: block;
   margin-bottom: 0.6rem;

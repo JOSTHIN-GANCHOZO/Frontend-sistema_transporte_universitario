@@ -5,6 +5,10 @@
   flex-direction: column;
   background: var(--color-primary);
   color: #ffffff;
+  height: 100dvh;
+  position: sticky;
+  top: 0;
+  align-self: stretch;
 }
 
 .sidebar__brand {

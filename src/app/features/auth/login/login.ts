@@ -18,6 +18,11 @@ export class Login {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly anio = new Date().getFullYear();
+  readonly mostrarPassword = signal(false);
+
+  alternarPassword(): void {
+    this.mostrarPassword.update((visible) => !visible);
+  }
 
   readonly form = this.fb.nonNullable.group({
     correo: ['', [Validators.required, Validators.email]],
