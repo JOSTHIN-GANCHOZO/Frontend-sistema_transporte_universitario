@@ -41,7 +41,11 @@ export class Login {
     const { correo, password } = this.form.getRawValue();
 
     this.auth.login(correo, password).subscribe({
-      next: () => this.router.navigate(['/main']),
+      next: (respuesta) => {
+        this.loading.set(false);
+        const destino = respuesta.requiere_cambio ? '/cambiar-password' : '/main';
+        this.router.navigate([destino]);
+      },
       error: (err) => {
         this.loading.set(false);
         this.error.set(err.error?.mensaje ?? 'No se pudo iniciar sesión. Inténtalo de nuevo.');

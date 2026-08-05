@@ -7,6 +7,7 @@ import { LoginResponse, Usuario } from '../../features/usuarios/models/usuario.m
 
 const TOKEN_KEY = 'auth_token';
 const USUARIO_KEY = 'auth_usuario';
+const REQUIERE_CAMBIO_KEY = 'auth_requiere_cambio';
 
 @Service()
 export class Auth {
@@ -21,7 +22,22 @@ export class Auth {
         tap((respuesta) => {
           localStorage.setItem(TOKEN_KEY, respuesta.token);
           localStorage.setItem(USUARIO_KEY, JSON.stringify(respuesta.usuario));
+          if (respuesta.requiere_cambio) {
+            localStorage.setItem(REQUIERE_CAMBIO_KEY, 'true');
+          } else {
+            localStorage.removeItem(REQUIERE_CAMBIO_KEY);
+          }
           this.usuarioActual.set(respuesta.usuario);
+        })
+      );
+  }
+
+  actualizarPassword(idUsuario: number, password: string): Observable<{ mensaje: string }> {
+    return this.http
+      .put<{ mensaje: string }>(`${environment.apiUrl}/credenciales/usuario/${idUsuario}/password`, { password })
+      .pipe(
+        tap(() => {
+          localStorage.removeItem(REQUIERE_CAMBIO_KEY);
         })
       );
   }
@@ -29,6 +45,7 @@ export class Auth {
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USUARIO_KEY);
+    localStorage.removeItem(REQUIERE_CAMBIO_KEY);
     this.usuarioActual.set(null);
   }
 
@@ -38,6 +55,10 @@ export class Auth {
 
   estaAutenticado(): boolean {
     return !!this.getToken();
+  }
+
+  requiereCambio(): boolean {
+    return localStorage.getItem(REQUIERE_CAMBIO_KEY) === 'true';
   }
 
   esAdministrador(): boolean {

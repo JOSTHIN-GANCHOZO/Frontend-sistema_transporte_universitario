@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth-guard';
+import { cambioPasswordGuard } from './core/guards/cambio-password-guard';
 import { roleGuard } from './core/guards/role-guard';
+import { CambiarPassword } from './features/auth/cambiar-password/cambiar-password';
 import { Login } from './features/auth/login/login';
 import { AuthLayout } from './layout/auth-layout/auth-layout';
 import { MainLayout } from './layout/main-layout/main-layout';
@@ -13,12 +15,17 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: Login },
+      {
+        path: 'cambiar-password',
+        component: CambiarPassword,
+        canActivate: [authGuard],
+      },
     ],
   },
   {
     path: 'main',
     component: MainLayout,
-    canActivate: [authGuard],
+    canActivate: [authGuard, cambioPasswordGuard],
     children: [
       { path: '', redirectTo: 'viajes', pathMatch: 'full' },
       {
