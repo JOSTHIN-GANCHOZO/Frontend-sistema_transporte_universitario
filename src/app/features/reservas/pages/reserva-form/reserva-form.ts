@@ -34,7 +34,24 @@ export class ReservaForm {
     if (idViaje && !isNaN(Number(idViaje))) {
       this.form.controls.id_viaje.setValue(Number(idViaje));
     }
+    this.form.controls.id_viaje.valueChanges.subscribe(() => this.actualizarLimiteAsiento());
     this.cargarViajes();
+  }
+
+  capacidadMaxima(): number | null {
+    const viaje = this.viajes().find((item) => item.id_viaje === this.form.controls.id_viaje.value);
+    return viaje?.Autobus?.capacidad_maxima ?? null;
+  }
+
+  private actualizarLimiteAsiento(): void {
+    const max = this.capacidadMaxima();
+    const control = this.form.controls.numero_asiento;
+    if (max == null) {
+      control.setValidators([Validators.required, Validators.min(1)]);
+    } else {
+      control.setValidators([Validators.required, Validators.min(1), Validators.max(max)]);
+    }
+    control.updateValueAndValidity();
   }
 
   private cargarViajes(): void {
@@ -42,6 +59,7 @@ export class ReservaForm {
       next: (viajes) => {
         this.viajes.set(viajes.filter((viaje) => viaje.estado === 'PROGRAMADO'));
         this.cargandoViajes.set(false);
+        this.actualizarLimiteAsiento();
       },
       error: () => {
         this.cargandoViajes.set(false);

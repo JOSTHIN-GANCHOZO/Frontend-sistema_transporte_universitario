@@ -49,9 +49,16 @@
             type="number"
             formControlName="numero_asiento"
             min="1"
+            [attr.max]="capacidadMaxima() ?? null"
           />
           @if (mostrarError('numero_asiento')) {
-            <span class="form__error">El número de asiento debe ser mayor a 0.</span>
+            <span class="form__error">
+              @if (capacidadMaxima()) {
+                El asiento debe estar entre 1 y {{ capacidadMaxima() }}.
+              } @else {
+                El número de asiento debe ser mayor a 0.
+              }
+            </span>
           }
         </div>
       </div>

@@ -1,5 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Auth } from '../../../../core/services/auth';
@@ -10,12 +9,11 @@ import { ViajeService } from '../../services/viaje';
 
 @Component({
   selector: 'app-viaje-detail',
-  imports: [ReactiveFormsModule],
+  imports: [],
   templateUrl: './viaje-detail.html',
   styleUrl: './viaje-detail.css',
 })
 export class ViajeDetail {
-  private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly viajeService = inject(ViajeService);
@@ -30,8 +28,16 @@ export class ViajeDetail {
   readonly reservaError = signal<string | null>(null);
   readonly reservaCreada = signal<Reserva | null>(null);
 
-  readonly form = this.fb.group({
-    numero_asiento: [1, [Validators.required, Validators.min(1)]],
+  readonly asientoSeleccionado = signal<number | null>(null);
+  readonly intentoEnvio = signal(false);
+
+  readonly asientos = computed(() => {
+    const max = this.viaje()?.Autobus?.capacidad_maxima ?? 0;
+    const ocupados = this.asientosOcupadosLista();
+    return Array.from({ length: max }, (_, indice) => {
+      const numero = indice + 1;
+      return { numero, ocupado: ocupados.includes(numero) };
+    });
   });
 
   constructor() {
@@ -79,10 +85,24 @@ export class ViajeDetail {
       .sort((a, b) => a - b);
   }
 
+  seleccionarAsiento(numero: number): void {
+    const asiento = this.asientos().find((item) => item.numero === numero);
+    if (!asiento || asiento.ocupado) {
+      return;
+    }
+    this.asientoSeleccionado.set(this.asientoSeleccionado() === numero ? null : numero);
+    this.intentoEnvio.set(false);
+  }
+
+  mostrarErrorAsiento(): boolean {
+    return this.intentoEnvio() && this.asientoSeleccionado() === null;
+  }
+
   onSubmit(): void {
     const viaje = this.viaje();
-    if (!viaje?.id_viaje || this.form.invalid) {
-      this.form.markAllAsTouched();
+    const numeroAsiento = this.asientoSeleccionado();
+    if (!viaje?.id_viaje || numeroAsiento === null) {
+      this.intentoEnvio.set(true);
       return;
     }
 
@@ -93,13 +113,14 @@ export class ViajeDetail {
     this.reservaService
       .crear({
         id_viaje: idViaje,
-        numero_asiento: Number(this.form.controls.numero_asiento.value) || 1,
+        numero_asiento: numeroAsiento,
       })
       .subscribe({
         next: (respuesta) => {
           this.guardando.set(false);
           this.reservaCreada.set(respuesta.reserva);
-          this.form.controls.numero_asiento.setValue(1);
+          this.asientoSeleccionado.set(null);
+          this.intentoEnvio.set(false);
           this.cargar(idViaje);
         },
         error: (err) => {
@@ -107,11 +128,6 @@ export class ViajeDetail {
           this.reservaError.set(err.error?.mensaje ?? 'No se pudo crear la reserva.');
         },
       });
-  }
-
-  mostrarError(campo: string): boolean {
-    const control = this.form.get(campo);
-    return !!control && control.invalid && control.touched;
   }
 
   nombreRuta(viaje: Viaje): string {

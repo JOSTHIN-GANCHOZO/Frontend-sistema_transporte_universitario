@@ -137,6 +137,63 @@ describe('ViajeDetail', () => {
     });
   });
 
+  describe('panel de asientos', () => {
+    it('genera tantos asientos como la capacidad del autobús', () => {
+      component.viaje.set(viajeProgramado);
+
+      expect(component.asientos().length).toBe(40);
+    });
+
+    it('marca como ocupado solo los asientos con reservas activas', () => {
+      component.viaje.set(viajeProgramado);
+
+      const asientos = component.asientos();
+      expect(asientos.find((a) => a.numero === 3)?.ocupado).toBe(true);
+      expect(asientos.find((a) => a.numero === 4)?.ocupado).toBe(false);
+      expect(asientos.find((a) => a.numero === 1)?.ocupado).toBe(false);
+    });
+
+    it('no genera asientos cuando el autobús no tiene capacidad', () => {
+      component.viaje.set({ ...viajeProgramado, Autobus: null });
+
+      expect(component.asientos()).toEqual([]);
+    });
+
+    it('selecciona y deselecciona un asiento libre', () => {
+      component.viaje.set(viajeProgramado);
+
+      component.seleccionarAsiento(4);
+      expect(component.asientoSeleccionado()).toBe(4);
+
+      component.seleccionarAsiento(4);
+      expect(component.asientoSeleccionado()).toBeNull();
+    });
+
+    it('cambia de asiento seleccionado a uno nuevo (uno solo)', () => {
+      component.viaje.set(viajeProgramado);
+
+      component.seleccionarAsiento(4);
+      component.seleccionarAsiento(5);
+      expect(component.asientoSeleccionado()).toBe(5);
+    });
+
+    it('ignora los asientos ocupados', () => {
+      component.viaje.set(viajeProgramado);
+
+      component.seleccionarAsiento(3);
+      expect(component.asientoSeleccionado()).toBeNull();
+    });
+
+    it('muestra error si se envía sin seleccionar asiento', () => {
+      component.viaje.set(viajeProgramado);
+
+      expect(component.mostrarErrorAsiento()).toBe(false);
+      component.onSubmit();
+      expect(component.asientoSeleccionado()).toBeNull();
+      expect(component.mostrarErrorAsiento()).toBe(true);
+    });
+  });
+
   describe('confirmación de la reserva', () => {
     it('parte sin reserva confirmada', () => {
       expect(component.reservaCreada()).toBeNull();

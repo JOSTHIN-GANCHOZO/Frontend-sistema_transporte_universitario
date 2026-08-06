@@ -125,19 +125,45 @@
       </div>
 
       @if (puedeReservar()) {
-        <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <form class="form__card form" (ngSubmit)="onSubmit()">
           <div class="form__grid">
-            <div class="form__field">
-              <label class="form__label" for="numero_asiento">Número de asiento *</label>
-              <input
-                class="form__input"
-                id="numero_asiento"
-                type="number"
-                formControlName="numero_asiento"
-                min="1"
-              />
-              @if (mostrarError('numero_asiento')) {
-                <span class="form__error">El número de asiento debe ser mayor a 0.</span>
+            <div class="form__field form__field--full">
+              <span class="form__label">Selecciona tu asiento *</span>
+              <div class="asientos">
+                @for (asiento of asientos(); track asiento.numero) {
+                  <button
+                    class="asiento"
+                    [class.asiento--ocupado]="asiento.ocupado"
+                    [class.asiento--seleccionado]="asientoSeleccionado() === asiento.numero"
+                    [attr.aria-label]="
+                      asiento.ocupado
+                        ? 'Asiento ' + asiento.numero + ' ocupado'
+                        : 'Asiento ' + asiento.numero + ' disponible'
+                    "
+                    type="button"
+                    [disabled]="asiento.ocupado"
+                    (click)="seleccionarAsiento(asiento.numero)"
+                  >
+                    {{ asiento.numero }}
+                  </button>
+                }
+              </div>
+              <div class="asientos-leyenda">
+                <span class="asientos-leyenda-item">
+                  <span class="asientos-leyenda-dot asientos-leyenda-dot--libre"></span>
+                  Disponible
+                </span>
+                <span class="asientos-leyenda-item">
+                  <span class="asientos-leyenda-dot asientos-leyenda-dot--ocupado"></span>
+                  Ocupado
+                </span>
+                <span class="asientos-leyenda-item">
+                  <span class="asientos-leyenda-dot asientos-leyenda-dot--seleccionado"></span>
+                  Seleccionado
+                </span>
+              </div>
+              @if (mostrarErrorAsiento()) {
+                <span class="form__error">Debes seleccionar un asiento disponible.</span>
               }
             </div>
           </div>
