@@ -47,18 +47,6 @@
         <app-icon nombre="conductores" />
         <span class="sidebar__label">Conductores</span>
       </a>
-      <a
-        class="sidebar__link"
-        routerLink="/main/mantenimientos"
-        routerLinkActive="sidebar__link--active"
-        [routerLinkActiveOptions]="{ exact: false }"
-        (click)="cerrarMenu()"
-        title="Mantenimientos"
-      >
-        <!-- Reusing autobuses icon since it's related to bus maintenance -->
-        <app-icon nombre="autobuses" />
-        <span class="sidebar__label">Mantenimientos</span>
-      </a>
     }
     <a
       class="sidebar__link"

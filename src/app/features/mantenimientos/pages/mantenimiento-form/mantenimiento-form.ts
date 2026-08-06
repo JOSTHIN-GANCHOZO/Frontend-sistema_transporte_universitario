@@ -39,12 +39,28 @@ export class MantenimientoForm implements OnInit {
 
   ngOnInit() {
     this.cargarAutobuses();
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.esEdicion.set(true);
       this.cargarMantenimiento(Number(id));
+      return;
     }
+
+    const autobus = this.route.snapshot.queryParamMap.get('autobus');
+    if (autobus && !isNaN(Number(autobus))) {
+      this.form.controls.id_autobus.setValue(Number(autobus));
+    }
+  }
+
+  private rutaLista(): (string | { autobus: number })[] {
+    const filtro = this.autobusFiltro();
+    return filtro == null ? ['/main/mantenimientos'] : ['/main/mantenimientos', { autobus: filtro }];
+  }
+
+  autobusFiltro(): number | null {
+    const autobus = this.route.snapshot.queryParamMap.get('autobus');
+    return autobus && !isNaN(Number(autobus)) ? Number(autobus) : null;
   }
 
   private cargarAutobuses() {
@@ -100,7 +116,7 @@ export class MantenimientoForm implements OnInit {
     if (this.esEdicion()) {
       const id = Number(this.route.snapshot.paramMap.get('id'));
       this.mantenimientoService.actualizar(id, payload).subscribe({
-        next: () => this.router.navigate(['/main/mantenimientos']),
+        next: () => this.router.navigate(this.rutaLista()),
         error: (err) => {
           this.loading.set(false);
           this.error.set(err.error?.mensaje ?? 'No se pudo actualizar el mantenimiento.');
@@ -110,7 +126,7 @@ export class MantenimientoForm implements OnInit {
     }
 
     this.mantenimientoService.crear(payload).subscribe({
-      next: () => this.router.navigate(['/main/mantenimientos']),
+      next: () => this.router.navigate(this.rutaLista()),
       error: (err) => {
         this.loading.set(false);
         this.error.set(err.error?.mensaje ?? 'No se pudo crear el mantenimiento.');
@@ -119,7 +135,7 @@ export class MantenimientoForm implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/main/mantenimientos']);
+    this.router.navigate(this.rutaLista());
   }
 
   mostrarError(campo: string): boolean {

@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 
 import { Mantenimiento } from '../../models/mantenimiento.model';
@@ -13,12 +13,27 @@ import { MantenimientoDetailModal } from '../../components/mantenimiento-detail-
 })
 export class MantenimientoList {
   private readonly mantenimientoService = inject(MantenimientoService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly mantenimientos = signal<Mantenimiento[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
+  readonly autobusFiltro = signal<number | null>(null);
+
+  readonly mantenimientosFiltrados = computed(() => {
+    const filtro = this.autobusFiltro();
+    if (filtro == null) {
+      return this.mantenimientos();
+    }
+    return this.mantenimientos().filter((m) => m.id_autobus === filtro);
+  });
+
   constructor() {
+    const autobus = this.route.snapshot.queryParamMap.get('autobus');
+    if (autobus && !isNaN(Number(autobus))) {
+      this.autobusFiltro.set(Number(autobus));
+    }
     this.cargar();
   }
 
@@ -55,6 +70,15 @@ export class MantenimientoList {
 
   nombreAutobus(mantenimiento: Mantenimiento): string {
     return mantenimiento.Autobus?.placa ?? `Autobús #${mantenimiento.id_autobus}`;
+  }
+
+  nombreAutobusFiltro(): string {
+    const filtro = this.autobusFiltro();
+    if (filtro == null) {
+      return 'Mantenimientos';
+    }
+    const bus = this.mantenimientos().find((m) => m.id_autobus === filtro)?.Autobus;
+    return bus?.placa ?? bus?.numero_interno ?? `Autobús #${filtro}`;
   }
 
   eliminarMantenimiento(id: number | undefined): void {

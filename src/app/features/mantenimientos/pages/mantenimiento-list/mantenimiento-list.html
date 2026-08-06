@@ -1,7 +1,16 @@
 <section class="page">
   <header class="page__header">
-    <h1 class="page__title">Mantenimientos</h1>
-    <a class="btn btn--primary" routerLink="/main/mantenimientos/nuevo">Nuevo mantenimiento</a>
+    <h1 class="page__title">{{ nombreAutobusFiltro() }}</h1>
+    @if (autobusFiltro() != null) {
+      <a class="btn btn--secondary" routerLink="/main/autobuses">Volver a autobuses</a>
+    }
+    <a
+      class="btn btn--primary"
+      routerLink="/main/mantenimientos/nuevo"
+      [queryParams]="autobusFiltro() != null ? { autobus: autobusFiltro() } : {}"
+    >
+      Nuevo mantenimiento
+    </a>
   </header>
 
   @if (error()) {
@@ -10,8 +19,14 @@
 
   @if (loading()) {
     <div class="empty-state">Cargando mantenimientos…</div>
-  } @else if (mantenimientos().length === 0) {
-    <div class="empty-state">No hay mantenimientos registrados.</div>
+  } @else if (mantenimientosFiltrados().length === 0) {
+    <div class="empty-state">
+      @if (autobusFiltro() != null) {
+        Este autobús no tiene mantenimientos registrados.
+      } @else {
+        No hay mantenimientos registrados.
+      }
+    </div>
   } @else {
     <div class="table-wrapper">
       <table class="table">
@@ -27,7 +42,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (mantenimiento of mantenimientos(); track mantenimiento.id_mantenimiento) {
+          @for (mantenimiento of mantenimientosFiltrados(); track mantenimiento.id_mantenimiento) {
             <tr>
               <td>{{ mantenimiento.fecha_inicio | date:'dd/MM/yyyy' }}</td>
               <td>{{ mantenimiento.fecha_fin ? (mantenimiento.fecha_fin | date:'dd/MM/yyyy') : '—' }}</td>
@@ -41,7 +56,13 @@
               </td>
               <td class="table__acciones">
                 <button class="btn btn--link" style="color: var(--primary-color);" type="button" (click)="verMantenimiento(mantenimiento)">Ver</button>
-                <a class="btn btn--link" [routerLink]="['/main/mantenimientos/editar', mantenimiento.id_mantenimiento]">Editar</a>
+                <a
+                  class="btn btn--link"
+                  [routerLink]="['/main/mantenimientos/editar', mantenimiento.id_mantenimiento]"
+                  [queryParams]="autobusFiltro() != null ? { autobus: autobusFiltro() } : {}"
+                >
+                  Editar
+                </a>
                 <button class="btn btn--link" style="color: var(--danger-color, #ef4444);" type="button" (click)="eliminarMantenimiento(mantenimiento.id_mantenimiento)">Eliminar</button>
               </td>
             </tr>

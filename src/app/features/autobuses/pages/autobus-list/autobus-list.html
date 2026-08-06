@@ -43,6 +43,13 @@
               </td>
               <td class="table__acciones">
                 <a class="btn btn--link" [routerLink]="[autobus.id_autobus]">Editar</a>
+                <a
+                  class="btn btn--link"
+                  [routerLink]="['/main/mantenimientos']"
+                  [queryParams]="{ autobus: autobus.id_autobus }"
+                >
+                  Mantenimientos
+                </a>
                 <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(autobus)">
                   Eliminar
                 </button>
