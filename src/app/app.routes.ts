@@ -47,6 +47,18 @@ export const routes: Routes = [
           import('./features/conductores/conductores.routes').then((m) => m.conductoresRoutes),
       },
       {
+        path: 'rutas',
+        canActivate: [roleGuard],
+        loadChildren: () =>
+          import('./features/rutas/rutas.routes').then((m) => m.rutasRoutes),
+      },
+      {
+        path: 'paradas',
+        canActivate: [roleGuard],
+        loadChildren: () =>
+          import('./features/rutas/paradas.routes').then((m) => m.paradasRoutes),
+      },
+      {
         path: 'viajes',
         loadChildren: () =>
           import('./features/viajes/viajes.routes').then((m) => m.viajesRoutes),
