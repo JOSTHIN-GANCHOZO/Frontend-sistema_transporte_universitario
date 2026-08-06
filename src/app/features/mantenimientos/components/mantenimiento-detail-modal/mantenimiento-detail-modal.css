@@ -1,0 +1,40 @@
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+
+.detail-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.detail-value {
+  color: var(--text-color, #1e293b);
+  font-size: 1rem;
+}
+
+.detail-full {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+  padding-top: 1rem;
+}
+
+.font-bold {
+  font-weight: 600;
+}
+
+.text-success {
+  color: var(--success-color, #10b981);
+}

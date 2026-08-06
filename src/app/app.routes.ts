@@ -56,6 +56,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/reservas/reservas.routes').then((m) => m.reservasRoutes),
       },
+      {
+        path: 'mantenimientos',
+        canActivate: [roleGuard],
+        loadChildren: () =>
+          import('./features/mantenimientos/mantenimientos.routes').then((m) => m.mantenimientosRoutes),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
