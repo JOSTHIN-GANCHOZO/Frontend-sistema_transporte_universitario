@@ -1,0 +1,64 @@
+@if (isOpen && mantenimiento) {
+  <div class="modal modal--open">
+    <div class="modal__backdrop" (click)="cerrar()"></div>
+    <div class="modal__content" style="max-width: 500px;">
+      <header class="modal__header">
+        <h2 class="modal__title">Detalles del Mantenimiento</h2>
+        <button class="modal__close" (click)="cerrar()">×</button>
+      </header>
+
+      <div class="modal__body" style="padding: 1.5rem;">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Autobús:</span>
+            <span class="detail-value font-bold">{{ mantenimiento.Autobus?.placa ?? 'ID ' + mantenimiento.id_autobus }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="detail-label">Estado:</span>
+            <span class="badge" 
+                  [class.badge-info]="mantenimiento.estado === 'PENDIENTE'"
+                  [class.badge-warning]="mantenimiento.estado === 'EN_PROCESO'"
+                  [class.badge-success]="mantenimiento.estado === 'COMPLETADO'"
+                  [class.badge-danger]="mantenimiento.estado === 'CANCELADO'">
+              {{ mantenimiento.estado }}
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="detail-label">Tipo:</span>
+            <span class="detail-value">{{ mantenimiento.tipo_mantenimiento || '—' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Costo:</span>
+            <span class="detail-value text-success font-bold">{{ mantenimiento.costo ? (mantenimiento.costo | currency:'USD') : '—' }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="detail-label">Fecha de Inicio:</span>
+            <span class="detail-value">{{ mantenimiento.fecha_inicio | date:'dd/MM/yyyy' }}</span>
+          </div>
+          
+          <div class="detail-item">
+            <span class="detail-label">Fecha de Fin:</span>
+            <span class="detail-value">{{ mantenimiento.fecha_fin ? (mantenimiento.fecha_fin | date:'dd/MM/yyyy') : '—' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-full">
+          <span class="detail-label">Descripción / Observaciones:</span>
+          <p class="detail-value" style="background-color: var(--bg-color, #f8fafc); padding: 1rem; border-radius: 6px; margin-top: 0.5rem;">
+            {{ mantenimiento.descripcion || 'Sin descripción detallada.' }}
+          </p>
+        </div>
+      </div>
+      
+      <footer class="modal__footer" style="padding: 1rem 1.5rem;">
+        <div class="modal__actions" style="width: 100%; display: flex; justify-content: flex-end;">
+          <button class="btn btn--primary" (click)="cerrar()">Cerrar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+}

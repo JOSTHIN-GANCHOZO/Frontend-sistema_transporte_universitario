@@ -33,4 +33,12 @@ export class ViajeService {
   restaurar(id: number): Observable<{ mensaje: string }> {
     return this.http.patch<{ mensaje: string }>(`${this.baseUrl}/${id}/restaurar`, {});
   }
+
+  actualizar(id: number, viaje: Partial<Viaje>): Observable<Viaje> {
+    return this.http.put<Viaje>(`${this.baseUrl}/${id}`, viaje);
+  }
+
+  obtenerReservas(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/${id}/reservas`);
+  }
 }
