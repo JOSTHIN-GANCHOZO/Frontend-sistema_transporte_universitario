@@ -3,41 +3,21 @@ import { RouterLink } from '@angular/router';
 
 import { Viaje } from '../../models/viaje.model';
 import { ViajeService } from '../../services/viaje';
-import { Auth } from '../../../../core/services/auth';
-import { VerReservasModal } from '../../components/ver-reservas-modal/ver-reservas-modal';
 
 @Component({
   selector: 'app-viaje-list',
-  imports: [RouterLink, VerReservasModal],
+  imports: [RouterLink],
   templateUrl: './viaje-list.html',
 })
 export class ViajeList {
   private readonly viajeService = inject(ViajeService);
-  private readonly authService = inject(Auth);
 
   readonly viajes = signal<Viaje[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
-  readonly mostrarModalReservas = signal(false);
-  readonly viajeSeleccionadoReservas = signal<Viaje | null>(null);
-
   constructor() {
     this.cargar();
-  }
-
-  esAdministrador(): boolean {
-    return this.authService.esAdministrador();
-  }
-
-  verReservas(viaje: Viaje): void {
-    this.viajeSeleccionadoReservas.set(viaje);
-    this.mostrarModalReservas.set(true);
-  }
-
-  cerrarModalReservas(): void {
-    this.mostrarModalReservas.set(false);
-    this.viajeSeleccionadoReservas.set(null);
   }
 
   cargar(): void {
