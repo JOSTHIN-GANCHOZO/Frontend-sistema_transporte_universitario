@@ -47,6 +47,39 @@
         <app-icon nombre="conductores" />
         <span class="sidebar__label">Conductores</span>
       </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/rutas"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="cerrarMenu()"
+        title="Rutas"
+      >
+        <app-icon nombre="rutas" />
+        <span class="sidebar__label">Rutas</span>
+      </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/paradas"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="cerrarMenu()"
+        title="Paradas"
+      >
+        <app-icon nombre="paradas" />
+        <span class="sidebar__label">Paradas</span>
+      </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/mantenimientos"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="cerrarMenu()"
+        title="Mantenimientos"
+      >
+        <app-icon nombre="mantenimientos" />
+        <span class="sidebar__label">Mantenimientos</span>
+      </a>
     }
     <a
       class="sidebar__link"
