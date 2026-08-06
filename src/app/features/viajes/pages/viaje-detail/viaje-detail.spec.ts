@@ -136,4 +136,25 @@ describe('ViajeDetail', () => {
       expect(component.asientosOcupadosLista()).toEqual([]);
     });
   });
+
+  describe('confirmación de la reserva', () => {
+    it('parte sin reserva confirmada', () => {
+      expect(component.reservaCreada()).toBeNull();
+    });
+
+    it('expone la reserva confirmada con sus datos clave', () => {
+      component.reservaCreada.set({
+        id_reserva: 42,
+        fecha: '2026-08-10',
+        numero_asiento: 3,
+        estado: 'CONFIRMADA',
+        id_viaje: 1,
+      });
+
+      const reserva = component.reservaCreada();
+      expect(reserva?.id_reserva).toBe(42);
+      expect(reserva?.numero_asiento).toBe(3);
+      expect(reserva?.estado).toBe('CONFIRMADA');
+    });
+  });
 });

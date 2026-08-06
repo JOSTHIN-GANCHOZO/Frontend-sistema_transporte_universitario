@@ -37,6 +37,13 @@
   color: var(--color-text-secondary);
 }
 
+.form__summary {
+  text-align: left;
+  border-top: 1px solid color-mix(in srgb, var(--color-text-secondary) 20%, transparent);
+  padding-top: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
 .form__success-actions {
   display: flex;
   flex-wrap: wrap;

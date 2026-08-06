@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Auth } from '../../../../core/services/auth';
+import { Reserva } from '../../../reservas/models/reserva.model';
 import { ReservaService } from '../../../reservas/services/reserva';
 import { Viaje } from '../../models/viaje.model';
 import { ViajeService } from '../../services/viaje';
@@ -27,7 +28,7 @@ export class ViajeDetail {
 
   readonly guardando = signal(false);
   readonly reservaError = signal<string | null>(null);
-  readonly reservada = signal(false);
+  readonly reservaCreada = signal<Reserva | null>(null);
 
   readonly form = this.fb.group({
     numero_asiento: [1, [Validators.required, Validators.min(1)]],
@@ -95,9 +96,9 @@ export class ViajeDetail {
         numero_asiento: Number(this.form.controls.numero_asiento.value) || 1,
       })
       .subscribe({
-        next: () => {
+        next: (respuesta) => {
           this.guardando.set(false);
-          this.reservada.set(true);
+          this.reservaCreada.set(respuesta.reserva);
           this.form.controls.numero_asiento.setValue(1);
           this.cargar(idViaje);
         },

@@ -1,115 +1,154 @@
 <section class="page">
-  @if (error()) {
-    <div class="alert alert--danger">{{ error() }}</div>
-  }
+  @if (reservaCreada(); as reserva) {
+    <div class="form__success">
+      <div class="form__success-icon">✓</div>
+      <h1 class="form__title">Reserva confirmada</h1>
+      <p class="form__success-text">
+        Tu reserva fue confirmada. Recuerda presentarte en la fecha y hora indicadas del viaje.
+      </p>
 
-  @if (loading()) {
-    <div class="empty-state">Cargando detalle del viaje…</div>
-  } @else if (viaje(); as viaje) {
-    <header class="page__header">
-      <h1 class="page__title">Detalle del viaje #{{ viaje.id_viaje }}</h1>
-      <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
-    </header>
-
-    @if (reservada()) {
-      <div class="form__success">
-        <div class="form__success-icon">✓</div>
-        <h1 class="form__title">Reserva creada correctamente</h1>
-        <p class="form__success-text">
-          Tu reserva fue confirmada. Recuerda presentarte en la fecha y hora indicadas del viaje.
-        </p>
-        <div class="form__success-actions">
-          <button class="btn btn--primary" type="button" (click)="irMisReservas()">
-            Ir a mis reservas
-          </button>
+      <div class="form__summary form__grid">
+        <div class="form__field">
+          <span class="form__label">Nº de reserva</span>
+          <p class="form__value">#{{ reserva.id_reserva }}</p>
         </div>
-      </div>
-    }
-
-    @if (reservaError()) {
-      <div class="alert alert--danger">{{ reservaError() }}</div>
-    }
-
-    <div class="form__card">
-      <div class="form__grid">
+        <div class="form__field">
+          <span class="form__label">Viaje</span>
+          <p class="form__value">#{{ viaje()?.id_viaje }}</p>
+        </div>
         <div class="form__field">
           <span class="form__label">Ruta</span>
-          <p class="form__value">{{ nombreRuta(viaje) }}</p>
-        </div>
-        <div class="form__field">
-          <span class="form__label">Recorrido</span>
-          <p class="form__value">{{ viaje.Ruta?.origen }} → {{ viaje.Ruta?.destino }}</p>
+          <p class="form__value">{{ viaje()?.Ruta?.origen }} → {{ viaje()?.Ruta?.destino }}</p>
         </div>
         <div class="form__field">
           <span class="form__label">Fecha</span>
-          <p class="form__value">{{ fechaFormateada(viaje.fecha) }}</p>
+          <p class="form__value">{{ fechaFormateada(viaje()?.fecha) }}</p>
         </div>
         <div class="form__field">
           <span class="form__label">Hora de salida</span>
-          <p class="form__value">{{ horaSalida(viaje.hora_salida) }}</p>
+          <p class="form__value">{{ horaSalida(viaje()?.hora_salida) }}</p>
         </div>
         <div class="form__field">
-          <span class="form__label">Llegada estimada</span>
-          <p class="form__value">{{ horaSalida(viaje.hora_llegada_estimada) }}</p>
+          <span class="form__label">Asiento</span>
+          <p class="form__value">{{ reserva.numero_asiento }}</p>
         </div>
         <div class="form__field">
           <span class="form__label">Estado</span>
-          <p class="form__value">
-            <span [class]="estadoBadge(viaje.estado)">{{ viaje.estado ?? 'SIN ESTADO' }}</span>
-          </p>
+          <p class="form__value"><span class="badge badge-success">CONFIRMADA</span></p>
         </div>
         <div class="form__field">
-          <span class="form__label">Autobús</span>
-          <p class="form__value">
-            {{ nombreAutobus(viaje) }} (Nº interno {{ viaje.Autobus?.numero_interno ?? '—' }},
-            {{ viaje.Autobus?.capacidad_maxima ?? '—' }} asientos)
-          </p>
-        </div>
-        <div class="form__field">
-          <span class="form__label">Conductor</span>
-          <p class="form__value">{{ nombreConductor(viaje) }}</p>
-        </div>
-        <div class="form__field">
-          <span class="form__label">Núm. licencia conductor</span>
-          <p class="form__value">{{ viaje.Conductor?.numero_licencia ?? '—' }}</p>
-        </div>
-        <div class="form__field">
-          <span class="form__label">Cupos disponibles</span>
-          <p class="form__value">{{ viaje.cupos_disponibles ?? '—' }}</p>
-        </div>
-        <div class="form__field">
-          <span class="form__label">Asientos ocupados</span>
-          <p class="form__value">
-            {{ asientosOcupados() === 0 ? 'Ninguno' : asientosOcupados() }}
-          </p>
+          <span class="form__label">Cupos restantes</span>
+          <p class="form__value">{{ viaje()?.cupos_disponibles ?? '—' }}</p>
         </div>
       </div>
-    </div>
 
-    @if (puedeReservar()) {
-      <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form__success-actions">
+        <button class="btn btn--primary" type="button" (click)="irMisReservas()">
+          Ir a mis reservas
+        </button>
+        <button class="btn btn--secondary" type="button" (click)="volver()">
+          Volver a viajes
+        </button>
+      </div>
+    </div>
+  } @else {
+    @if (error()) {
+      <div class="alert alert--danger">{{ error() }}</div>
+    }
+
+    @if (loading()) {
+      <div class="empty-state">Cargando detalle del viaje…</div>
+    } @else if (viaje(); as viaje) {
+      <header class="page__header">
+        <h1 class="page__title">Detalle del viaje #{{ viaje.id_viaje }}</h1>
+        <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+      </header>
+
+      @if (reservaError()) {
+        <div class="alert alert--danger">{{ reservaError() }}</div>
+      }
+
+      <div class="form__card">
         <div class="form__grid">
           <div class="form__field">
-            <label class="form__label" for="numero_asiento">Número de asiento *</label>
-            <input
-              class="form__input"
-              id="numero_asiento"
-              type="number"
-              formControlName="numero_asiento"
-              min="1"
-            />
-            @if (mostrarError('numero_asiento')) {
-              <span class="form__error">El número de asiento debe ser mayor a 0.</span>
-            }
+            <span class="form__label">Ruta</span>
+            <p class="form__value">{{ nombreRuta(viaje) }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Recorrido</span>
+            <p class="form__value">{{ viaje.Ruta?.origen }} → {{ viaje.Ruta?.destino }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Fecha</span>
+            <p class="form__value">{{ fechaFormateada(viaje.fecha) }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Hora de salida</span>
+            <p class="form__value">{{ horaSalida(viaje.hora_salida) }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Llegada estimada</span>
+            <p class="form__value">{{ horaSalida(viaje.hora_llegada_estimada) }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Estado</span>
+            <p class="form__value">
+              <span [class]="estadoBadge(viaje.estado)">{{ viaje.estado ?? 'SIN ESTADO' }}</span>
+            </p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Autobús</span>
+            <p class="form__value">
+              {{ nombreAutobus(viaje) }} (Nº interno {{ viaje.Autobus?.numero_interno ?? '—' }},
+              {{ viaje.Autobus?.capacidad_maxima ?? '—' }} asientos)
+            </p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Conductor</span>
+            <p class="form__value">{{ nombreConductor(viaje) }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Núm. licencia conductor</span>
+            <p class="form__value">{{ viaje.Conductor?.numero_licencia ?? '—' }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Cupos disponibles</span>
+            <p class="form__value">{{ viaje.cupos_disponibles ?? '—' }}</p>
+          </div>
+          <div class="form__field">
+            <span class="form__label">Asientos ocupados</span>
+            <p class="form__value">
+              {{ asientosOcupados() === 0 ? 'Ninguno' : asientosOcupados() }}
+            </p>
           </div>
         </div>
+      </div>
 
-        <div class="form__actions">
-          <button class="btn btn--primary" type="submit" [disabled]="guardando()">
-            {{ guardando() ? 'Reservando…' : 'Reservar' }}
-          </button>
-        </div>
-      </form>
+      @if (puedeReservar()) {
+        <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="form__grid">
+            <div class="form__field">
+              <label class="form__label" for="numero_asiento">Número de asiento *</label>
+              <input
+                class="form__input"
+                id="numero_asiento"
+                type="number"
+                formControlName="numero_asiento"
+                min="1"
+              />
+              @if (mostrarError('numero_asiento')) {
+                <span class="form__error">El número de asiento debe ser mayor a 0.</span>
+              }
+            </div>
+          </div>
+
+          <div class="form__actions">
+            <button class="btn btn--primary" type="submit" [disabled]="guardando()">
+              {{ guardando() ? 'Reservando…' : 'Reservar' }}
+            </button>
+          </div>
+        </form>
+      }
     }
   }
 </section>
