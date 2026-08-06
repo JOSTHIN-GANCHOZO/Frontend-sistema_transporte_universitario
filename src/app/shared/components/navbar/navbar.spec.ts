@@ -32,6 +32,17 @@ describe('Navbar', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('botón de menú', () => {
+    it('emite el evento para abrir el drawer', () => {
+      const emitSpy = vi.spyOn(component.menuClick, 'emit');
+      const boton = fixture.nativeElement.querySelector('button.navbar__menu');
+
+      boton.click();
+
+      expect(emitSpy).toHaveBeenCalled();
+    });
+  });
+
   describe('solicitarCierre', () => {
     it('abre el diálogo de confirmación sin cerrar la sesión', () => {
       localStorage.setItem('auth_token', 'token-de-prueba');

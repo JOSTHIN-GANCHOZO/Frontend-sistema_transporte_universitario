@@ -10,6 +10,25 @@
   border-bottom: 3px solid var(--color-accent);
 }
 
+.navbar__menu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-right: auto;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius);
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.navbar__menu:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .navbar__user {
   display: flex;
   align-items: center;
@@ -51,6 +70,10 @@
 @media (max-width: 640px) {
   .navbar {
     padding: 0 1rem;
+  }
+
+  .navbar__menu {
+    display: inline-flex;
   }
 
   .navbar__usuario {
