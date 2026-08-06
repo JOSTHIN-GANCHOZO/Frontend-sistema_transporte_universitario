@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { Auth } from '../../../../core/services/auth';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Usuario } from '../../models/usuario.model';
 import { UsuarioService } from '../../services/usuario';
@@ -12,6 +13,7 @@ import { UsuarioService } from '../../services/usuario';
 })
 export class UsuarioList {
   private readonly usuarioService = inject(UsuarioService);
+  private readonly auth = inject(Auth);
 
   readonly usuarios = signal<Usuario[]>([]);
   readonly loading = signal(true);
@@ -39,6 +41,23 @@ export class UsuarioList {
         this.error.set('No se pudieron cargar los usuarios.');
       },
     });
+  }
+
+  noGestionable(usuario: Usuario): boolean {
+    const usuarioActual = this.auth.usuarioActual();
+    if (usuarioActual && usuario.id_usuario === usuarioActual.id_usuario) {
+      return true;
+    }
+    const esAdministrativo = usuario.Rol?.nombre === 'ADMINISTRATIVO';
+    if (!esAdministrativo) {
+      return false;
+    }
+    return !this.usuarios().some(
+      (u) =>
+        u.id_usuario !== usuario.id_usuario &&
+        u.Rol?.nombre === 'ADMINISTRATIVO' &&
+        u.Credencial?.estado === 'ACTIVA'
+    );
   }
 
   pedirEliminar(usuario: Usuario): void {

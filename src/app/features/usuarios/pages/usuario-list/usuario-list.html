@@ -43,9 +43,11 @@
               </td>
               <td class="table__acciones">
                 <a class="btn btn--link" [routerLink]="[usuario.id_usuario]">Editar</a>
-                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(usuario)">
-                  Eliminar
-                </button>
+                @if (!noGestionable(usuario)) {
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(usuario)">
+                    Eliminar
+                  </button>
+                }
               </td>
             </tr>
           }
