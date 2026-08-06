@@ -1,0 +1,58 @@
+@if (isOpen) {
+  <div class="modal modal--open">
+    <div class="modal__backdrop" (click)="cerrar()"></div>
+    <div class="modal__content" style="max-width: 700px;">
+      <header class="modal__header">
+        <h2 class="modal__title">Reservas del viaje</h2>
+        <button class="modal__close" (click)="cerrar()" aria-label="Cerrar modal">
+          &times;
+        </button>
+      </header>
+
+      <div class="modal__body">
+        @if (error()) {
+          <div class="alert alert--danger">{{ error() }}</div>
+        }
+
+        @if (loading()) {
+          <div class="empty-state">Cargando reservas…</div>
+        } @else if (reservas().length === 0) {
+          <div class="empty-state">No hay reservas para este viaje.</div>
+        } @else {
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>N° Asiento</th>
+                  <th>Fecha</th>
+                  <th>Usuario</th>
+                  <th>Identificación</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (reserva of reservas(); track reserva.id_reserva) {
+                  <tr>
+                    <td>{{ reserva.numero_asiento }}</td>
+                    <td>{{ reserva.fecha | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ reserva.Usuario?.nombres }} {{ reserva.Usuario?.apellidos }}</td>
+                    <td>{{ reserva.Usuario?.identificacion }}</td>
+                    <td>
+                      <span [class]="'badge badge-' + (reserva.estado === 'CONFIRMADA' ? 'success' : reserva.estado === 'CANCELADA' ? 'danger' : 'info')">
+                        {{ reserva.estado }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+
+      <footer class="modal__footer">
+        <button class="btn btn--secondary" (click)="cerrar()">Cerrar</button>
+      </footer>
+    </div>
+  </div>
+}
