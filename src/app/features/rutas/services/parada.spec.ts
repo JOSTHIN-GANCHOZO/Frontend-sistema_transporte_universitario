@@ -1,13 +1,16 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { Parada } from './parada';
+import { ParadaService } from './parada';
 
-describe('Parada', () => {
-  let service: Parada;
+describe('ParadaService', () => {
+  let service: ParadaService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Parada);
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient()],
+    });
+    service = TestBed.inject(ParadaService);
   });
 
   it('should be created', () => {

@@ -1,1 +1,92 @@
-<p>sidebar works!</p>
+﻿@if (abierto()) {
+  <div class="sidebar__backdrop" (click)="cerrarMenu()"></div>
+}
+
+<aside
+  class="sidebar"
+  [class.sidebar--abierto]="abierto()"
+  [class.sidebar--colapsado]="colapsado()"
+>
+  <div class="sidebar__brand">
+    <span class="sidebar__mark">U</span>
+    <span class="sidebar__brand-text">Unibus</span>
+  </div>
+
+  <nav class="sidebar__nav">
+    @if (esAdministrador()) {
+      <a
+        class="sidebar__link"
+        routerLink="/main/usuarios"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="cerrarMenu()"
+        title="Usuarios"
+      >
+        <app-icon nombre="usuarios" />
+        <span class="sidebar__label">Usuarios</span>
+      </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/autobuses"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="cerrarMenu()"
+        title="Autobuses"
+      >
+        <app-icon nombre="autobuses" />
+        <span class="sidebar__label">Autobuses</span>
+      </a>
+      <a
+        class="sidebar__link"
+        routerLink="/main/conductores"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="cerrarMenu()"
+        title="Conductores"
+      >
+        <app-icon nombre="conductores" />
+        <span class="sidebar__label">Conductores</span>
+      </a>
+    }
+    <a
+      class="sidebar__link"
+      routerLink="/main/viajes"
+      routerLinkActive="sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      (click)="cerrarMenu()"
+      title="Viajes"
+    >
+      <app-icon nombre="viajes" />
+      <span class="sidebar__label">Viajes</span>
+    </a>
+    <a
+      class="sidebar__link"
+      routerLink="/main/reservas"
+      routerLinkActive="sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      (click)="cerrarMenu()"
+      title="Reservas"
+    >
+      <app-icon nombre="reservas" />
+      <span class="sidebar__label">
+        @if (esAdministrador()) {
+          Reservas
+        } @else {
+          Mis Reservas
+        }
+      </span>
+    </a>
+  </nav>
+
+  <div class="sidebar__footer">
+    <button
+      class="sidebar__toggle"
+      type="button"
+      [attr.title]="colapsado() ? 'Expandir menú' : 'Plegar menú'"
+      [attr.aria-label]="colapsado() ? 'Expandir menú' : 'Plegar menú'"
+      (click)="alternarColapso()"
+    >
+      <app-icon [nombre]="colapsado() ? 'chevron-right' : 'chevron-left'" />
+    </button>
+  </div>
+</aside>

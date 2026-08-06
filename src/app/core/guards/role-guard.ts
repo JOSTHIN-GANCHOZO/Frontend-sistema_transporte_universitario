@@ -1,5 +1,15 @@
-import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 
-export const roleGuard: CanActivateFn = (route, state) => {
-  return true;
+import { Auth } from '../services/auth';
+
+export const roleGuard: CanActivateFn = () => {
+  const auth = inject(Auth);
+  const router = inject(Router);
+
+  if (auth.esAdministrador()) {
+    return true;
+  }
+
+  return router.createUrlTree(['/main']);
 };
