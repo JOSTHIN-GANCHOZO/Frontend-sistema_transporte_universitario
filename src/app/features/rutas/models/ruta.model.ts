@@ -5,5 +5,5 @@ export interface Ruta {
   origen: string;
   destino: string;
   distancia_estimada?: number;
-  duracion_aproximada?: number;
+  duracion_aproximada?: string;
 }

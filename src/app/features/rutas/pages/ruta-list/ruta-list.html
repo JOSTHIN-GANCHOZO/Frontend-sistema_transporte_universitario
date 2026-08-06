@@ -1,0 +1,62 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Rutas</h1>
+    <a class="btn btn--primary" routerLink="nuevo">+ Nueva ruta</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando rutas…</div>
+  } @else if (rutas().length === 0) {
+    <div class="empty-state">No hay rutas registradas.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Recorrido</th>
+            <th>Distancia</th>
+            <th>Duración</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ruta of rutas(); track ruta.id_ruta) {
+            <tr>
+              <td>{{ ruta.codigo }}</td>
+              <td>{{ ruta.nombre }}</td>
+              <td>{{ ruta.origen }} → {{ ruta.destino }}</td>
+              <td>{{ ruta.distancia_estimada != null ? ruta.distancia_estimada + ' km' : '—' }}</td>
+              <td>{{ ruta.duracion_aproximada ? ruta.duracion_aproximada.slice(0, 5) + ' h' : '—' }}</td>
+              <td class="table__acciones">
+                <a class="btn btn--link" [routerLink]="[ruta.id_ruta]">Editar</a>
+                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(ruta)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (dialogoVisible() && rutaAEliminar()) {
+  <app-confirm-dialog
+    titulo="Eliminar ruta"
+    [mensaje]="
+      '¿Estás seguro de eliminar la ruta ' +
+      (rutaAEliminar()?.nombre ?? '') +
+      '? Esta acción no se puede deshacer.'
+    "
+    textoConfirmar="Eliminar"
+    (confirmado)="confirmarEliminacion()"
+    (cancelado)="cancelarEliminacion()"
+  />
+}

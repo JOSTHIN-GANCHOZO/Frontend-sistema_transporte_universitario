@@ -1,0 +1,159 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">{{ esEdicion() ? 'Editar ruta' : 'Nueva ruta' }}</h1>
+    <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    @if (loading()) {
+      <div class="form__loading">Cargando…</div>
+    }
+
+    <div class="form__grid">
+      <div class="form__field">
+        <label class="form__label" for="codigo">Código *</label>
+        <input class="form__input" id="codigo" formControlName="codigo" maxlength="20" />
+        @if (mostrarError('codigo')) {
+          <span class="form__error">El código es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="nombre">Nombre *</label>
+        <input class="form__input" id="nombre" formControlName="nombre" maxlength="100" />
+        @if (mostrarError('nombre')) {
+          <span class="form__error">El nombre es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="origen">Origen *</label>
+        <input class="form__input" id="origen" formControlName="origen" maxlength="150" />
+        @if (mostrarError('origen')) {
+          <span class="form__error">El origen es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="destino">Destino *</label>
+        <input class="form__input" id="destino" formControlName="destino" maxlength="150" />
+        @if (mostrarError('destino')) {
+          <span class="form__error">El destino es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="distancia_estimada">Distancia estimada (km)</label>
+        <input
+          class="form__input"
+          id="distancia_estimada"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="distancia_estimada"
+        />
+        @if (mostrarError('distancia_estimada')) {
+          <span class="form__error">La distancia debe ser un valor numérico positivo.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="duracion_aproximada">Duración aproximada</label>
+        <input
+          class="form__input"
+          id="duracion_aproximada"
+          type="time"
+          step="60"
+          formControlName="duracion_aproximada"
+        />
+      </div>
+    </div>
+
+    <div class="form__grid">
+      <div class="form__field form__field--full">
+        <label class="form__label">Paradas de la ruta *</label>
+        <div class="ruta-paradas">
+          <div class="ruta-paradas__agregar">
+            <select
+              class="form__input"
+              aria-label="Parada disponible"
+              #selectParada
+              [disabled]="paradasParaAgregar().length === 0"
+            >
+              @for (parada of paradasParaAgregar(); track parada.id_parada) {
+                <option [value]="parada.id_parada">
+                  {{ parada.codigo }} — {{ parada.nombre }}
+                </option>
+              }
+            </select>
+            <button
+              class="btn btn--secondary"
+              type="button"
+              (click)="agregarParadaDesdeSelect(selectParada.value)"
+              [disabled]="paradasParaAgregar().length === 0"
+            >
+              Agregar parada
+            </button>
+          </div>
+
+          <ul class="ruta-paradas__lista">
+            @for (parada of paradasSeleccionadas(); track parada.id_parada; let i = $index) {
+              <li class="ruta-paradas__item">
+                <span class="ruta-paradas__orden">{{ parada.orden }}</span>
+                <span class="ruta-paradas__nombre">{{ parada.Parada?.nombre ?? 'Parada #' + parada.id_parada }}</span>
+                <span class="ruta-paradas__codigo">{{ parada.Parada?.codigo }}</span>
+                <span class="ruta-paradas__acciones">
+                  <button
+                    class="ruta-paradas__boton"
+                    type="button"
+                    aria-label="Subir parada"
+                    (click)="subirParada(i)"
+                    [disabled]="i === 0"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    class="ruta-paradas__boton"
+                    type="button"
+                    aria-label="Bajar parada"
+                    (click)="bajarParada(i)"
+                    [disabled]="i === paradasSeleccionadas().length - 1"
+                  >
+                    ↓
+                  </button>
+                  <button
+                    class="ruta-paradas__boton ruta-paradas__boton--peligro"
+                    type="button"
+                    aria-label="Quitar parada"
+                    (click)="quitarParada(i)"
+                  >
+                    ✕
+                  </button>
+                </span>
+              </li>
+            } @empty {
+              <li class="ruta-paradas__vacio">
+                Aún no hay paradas asignadas. Agrega al menos 2 paradas (origen y destino).
+              </li>
+            }
+          </ul>
+        </div>
+
+        @if (errorParadas()) {
+          <span class="form__error">{{ errorParadas() }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+      <button class="btn btn--primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Guardando…' : esEdicion() ? 'Guardar cambios' : 'Crear ruta' }}
+      </button>
+    </div>
+  </form>
+</section>
