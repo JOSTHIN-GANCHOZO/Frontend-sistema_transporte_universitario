@@ -1,7 +1,6 @@
 <section class="page">
   <header class="page__header">
     <h1 class="page__title">{{ auth.esAdministrador() ? 'Reservas' : 'Mis Reservas' }}</h1>
-    <a class="btn btn--primary" routerLink="nuevo">+ Nueva reserva</a>
   </header>
 
   @if (error()) {

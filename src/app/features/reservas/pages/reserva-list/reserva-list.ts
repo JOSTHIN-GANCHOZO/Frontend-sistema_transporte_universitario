@@ -1,5 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { Auth } from '../../../../core/services/auth';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
@@ -8,7 +7,7 @@ import { ReservaService } from '../../services/reserva';
 
 @Component({
   selector: 'app-reserva-list',
-  imports: [RouterLink, ConfirmDialog],
+  imports: [ConfirmDialog],
   templateUrl: './reserva-list.html',
 })
 export class ReservaList {
