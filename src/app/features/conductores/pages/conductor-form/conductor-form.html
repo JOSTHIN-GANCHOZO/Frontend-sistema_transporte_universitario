@@ -1,1 +1,89 @@
-<p>conductor-form works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">{{ esEdicion() ? 'Editar conductor' : 'Nuevo conductor' }}</h1>
+    <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    @if (loading()) {
+      <div class="form__loading">Cargando…</div>
+    }
+
+    <div class="form__grid">
+      <div class="form__field">
+        <label class="form__label" for="identificacion">Identificación *</label>
+        <input class="form__input" id="identificacion" formControlName="identificacion" />
+        @if (mostrarError('identificacion')) {
+          <span class="form__error">La identificación es obligatoria.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="nombres">Nombres *</label>
+        <input class="form__input" id="nombres" formControlName="nombres" />
+        @if (mostrarError('nombres')) {
+          <span class="form__error">El nombre es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="apellidos">Apellidos *</label>
+        <input class="form__input" id="apellidos" formControlName="apellidos" />
+        @if (mostrarError('apellidos')) {
+          <span class="form__error">El apellido es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="telefono">Teléfono</label>
+        <input class="form__input" id="telefono" formControlName="telefono" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="correo">Correo electrónico</label>
+        <input class="form__input" id="correo" type="email" formControlName="correo" />
+        @if (mostrarError('correo')) {
+          <span class="form__error">Ingresa un correo válido.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="numero_licencia">N° de licencia *</label>
+        <input class="form__input" id="numero_licencia" formControlName="numero_licencia" />
+        @if (mostrarError('numero_licencia')) {
+          <span class="form__error">El número de licencia es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="fecha_vencimiento_licencia">Vencimiento de licencia *</label>
+        <input
+          class="form__input"
+          id="fecha_vencimiento_licencia"
+          type="date"
+          formControlName="fecha_vencimiento_licencia"
+        />
+        @if (mostrarError('fecha_vencimiento_licencia')) {
+          <span class="form__error">
+            {{
+              form.controls.fecha_vencimiento_licencia.hasError('required')
+                ? 'La fecha de vencimiento es obligatoria.'
+                : 'La fecha de vencimiento debe ser hoy o una fecha futura.'
+            }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+      <button class="btn btn--primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Guardando…' : esEdicion() ? 'Guardar cambios' : 'Crear conductor' }}
+      </button>
+    </div>
+  </form>
+</section>

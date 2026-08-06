@@ -1,0 +1,67 @@
+<section class="page">
+  @if (creada()) {
+    <div class="form__success">
+      <div class="form__success-icon">✓</div>
+      <h1 class="form__title">Reserva creada correctamente</h1>
+      <p class="form__success-text">
+        Tu reserva fue confirmada. Recuerda presentarte en la fecha y hora indicadas del viaje.
+      </p>
+      <div class="form__success-actions">
+        <button class="btn btn--primary" type="button" (click)="volver()">
+          Ir a mis reservas
+        </button>
+      </div>
+    </div>
+  } @else {
+    <header class="page__header">
+      <h1 class="page__title">Nueva reserva</h1>
+      <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+    </header>
+
+    @if (error()) {
+      <div class="alert alert--danger">{{ error() }}</div>
+    }
+
+    <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (cargandoViajes()) {
+        <div class="form__loading">Cargando viajes…</div>
+      }
+
+      <div class="form__grid">
+        <div class="form__field">
+          <label class="form__label" for="id_viaje">Viaje *</label>
+          <select class="form__input" id="id_viaje" formControlName="id_viaje">
+            <option [ngValue]="null" disabled>Selecciona un viaje</option>
+            @for (viaje of viajes(); track viaje.id_viaje) {
+              <option [ngValue]="viaje.id_viaje">{{ nombreViaje(viaje) }}</option>
+            }
+          </select>
+          @if (mostrarError('id_viaje')) {
+            <span class="form__error">Debes seleccionar un viaje.</span>
+          }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="numero_asiento">Número de asiento *</label>
+          <input
+            class="form__input"
+            id="numero_asiento"
+            type="number"
+            formControlName="numero_asiento"
+            min="1"
+          />
+          @if (mostrarError('numero_asiento')) {
+            <span class="form__error">El número de asiento debe ser mayor a 0.</span>
+          }
+        </div>
+      </div>
+
+      <div class="form__actions">
+        <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+        <button class="btn btn--primary" type="submit" [disabled]="guardando()">
+          {{ guardando() ? 'Reservando…' : 'Reservar' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

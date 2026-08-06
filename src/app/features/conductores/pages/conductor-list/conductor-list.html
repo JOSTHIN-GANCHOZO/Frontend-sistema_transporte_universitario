@@ -1,1 +1,73 @@
-<p>conductor-list works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Conductores</h1>
+    <a class="btn btn--primary" routerLink="nuevo">+ Nuevo conductor</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando conductores…</div>
+  } @else if (conductores().length === 0) {
+    <div class="empty-state">No hay conductores registrados.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Identificación</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>N° Licencia</th>
+            <th>Vencimiento licencia</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (conductor of conductores(); track conductor.id_conductor) {
+            <tr>
+              <td>{{ conductor.identificacion }}</td>
+              <td>{{ conductor.nombres }}</td>
+              <td>{{ conductor.apellidos }}</td>
+              <td>{{ conductor.telefono ?? '—' }}</td>
+              <td>{{ conductor.correo ?? '—' }}</td>
+              <td>{{ conductor.numero_licencia }}</td>
+              <td>
+                {{ conductor.fecha_vencimiento_licencia }}
+                @if (licenciaVencida(conductor)) {
+                  <span class="badge badge-danger">Vencida</span>
+                }
+              </td>
+              <td class="table__acciones">
+                <a class="btn btn--link" [routerLink]="[conductor.id_conductor]">Editar</a>
+                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(conductor)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (dialogoVisible() && conductorAEliminar()) {
+  <app-confirm-dialog
+    titulo="Eliminar conductor"
+    [mensaje]="
+      '¿Estás seguro de eliminar a ' +
+      (conductorAEliminar()?.nombres ?? '') +
+      ' ' +
+      (conductorAEliminar()?.apellidos ?? '') +
+      '? Esta acción no se puede deshacer.'
+    "
+    textoConfirmar="Eliminar"
+    (confirmado)="confirmarEliminacion()"
+    (cancelado)="cancelarEliminacion()"
+  />
+}

@@ -1,1 +1,70 @@
-<p>usuario-list works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Usuarios</h1>
+    <a class="btn btn--primary" routerLink="nuevo">+ Nuevo usuario</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando usuarios…</div>
+  } @else if (usuarios().length === 0) {
+    <div class="empty-state">No hay usuarios registrados.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Identificación</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Tipo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuarios(); track usuario.id_usuario) {
+            <tr>
+              <td>{{ usuario.identificacion }}</td>
+              <td>{{ usuario.nombres }} {{ usuario.apellidos }}</td>
+              <td>{{ usuario.correo }}</td>
+              <td>{{ usuario.telefono ?? '—' }}</td>
+              <td><span class="badge badge-info">{{ usuario.tipo_usuario }}</span></td>
+              <td>{{ usuario.Rol?.nombre }}</td>
+              <td>
+                <span [class]="estadoBadge(usuario.Credencial?.estado)">
+                  {{ usuario.Credencial?.estado ?? 'SIN CREDENCIAL' }}
+                </span>
+              </td>
+              <td class="table__acciones">
+                <a class="btn btn--link" [routerLink]="[usuario.id_usuario]">Editar</a>
+                @if (!noGestionable(usuario)) {
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(usuario)">
+                    Eliminar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (dialogoVisible() && usuarioAEliminar()) {
+  <app-confirm-dialog
+    titulo="Eliminar usuario"
+    [mensaje]="
+      '¿Estás seguro de eliminar a ' + (usuarioAEliminar()?.nombres ?? '') + '? Esta acción no se puede deshacer.'
+    "
+    textoConfirmar="Eliminar"
+    (confirmado)="confirmarEliminacion()"
+    (cancelado)="cancelarEliminacion()"
+  />
+}

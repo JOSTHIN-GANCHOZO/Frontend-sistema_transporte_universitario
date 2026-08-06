@@ -1,0 +1,85 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">{{ esEdicion() ? 'Editar viaje' : 'Nuevo viaje' }}</h1>
+    <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    @if (loading()) {
+      <div class="form__loading">Cargando…</div>
+    }
+
+    <div class="form__grid">
+      <div class="form__field">
+        <label class="form__label" for="fecha">Fecha *</label>
+        <input class="form__input" id="fecha" type="date" formControlName="fecha" />
+        @if (mostrarError('fecha')) {
+          <span class="form__error">La fecha es obligatoria.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="hora_salida">Hora de salida *</label>
+        <input class="form__input" id="hora_salida" type="time" formControlName="hora_salida" />
+        @if (mostrarError('hora_salida')) {
+          <span class="form__error">La hora de salida es obligatoria.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="hora_llegada_estimada">Hora de llegada estimada</label>
+        <input class="form__input" id="hora_llegada_estimada" type="time" formControlName="hora_llegada_estimada" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="id_ruta">Ruta *</label>
+        <select class="form__input" id="id_ruta" formControlName="id_ruta">
+          <option [ngValue]="null">Seleccione una ruta</option>
+          @for (ruta of rutas(); track ruta.id_ruta) {
+            <option [value]="ruta.id_ruta">{{ ruta.nombre }} ({{ruta.origen}} - {{ruta.destino}})</option>
+          }
+        </select>
+        @if (mostrarError('id_ruta')) {
+          <span class="form__error">Debe seleccionar una ruta.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="id_autobus">Autobús *</label>
+        <select class="form__input" id="id_autobus" formControlName="id_autobus">
+          <option [ngValue]="null">Seleccione un autobús</option>
+          @for (bus of autobuses(); track bus.id_autobus) {
+            <option [value]="bus.id_autobus">{{ bus.numero_interno }} - {{ bus.placa }} (Cap: {{bus.capacidad_maxima}})</option>
+          }
+        </select>
+        @if (mostrarError('id_autobus')) {
+          <span class="form__error">Debe seleccionar un autobús.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="id_conductor">Conductor *</label>
+        <select class="form__input" id="id_conductor" formControlName="id_conductor">
+          <option [ngValue]="null">Seleccione un conductor</option>
+          @for (cond of conductores(); track cond.id_conductor) {
+            <option [value]="cond.id_conductor">{{ cond.nombres }} {{ cond.apellidos }}</option>
+          }
+        </select>
+        @if (mostrarError('id_conductor')) {
+          <span class="form__error">Debe seleccionar un conductor.</span>
+        }
+      </div>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+      <button class="btn btn--primary" type="submit" [disabled]="loading() || form.disabled">
+        {{ loading() ? 'Guardando…' : esEdicion() ? 'Guardar cambios' : 'Crear viaje' }}
+      </button>
+    </div>
+  </form>
+</section>

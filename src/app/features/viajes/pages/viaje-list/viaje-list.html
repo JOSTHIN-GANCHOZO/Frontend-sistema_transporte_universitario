@@ -1,1 +1,75 @@
-<p>viaje-list works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Viajes</h1>
+    @if (esAdministrador()) {
+      <a class="btn btn--primary" routerLink="/main/viajes/nuevo">Nuevo viaje</a>
+    }
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando viajes…</div>
+  } @else if (viajes().length === 0) {
+    <div class="empty-state">No hay viajes registrados.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora salida</th>
+            <th>Ruta</th>
+            <th>Autobús</th>
+            <th>Conductor</th>
+            <th>Cupos disponibles</th>
+            <th>Estado</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (viaje of viajes(); track viaje.id_viaje) {
+            <tr>
+              <td>{{ viaje.fecha }}</td>
+              <td>{{ horaSalida(viaje.hora_salida) }}</td>
+              <td>{{ nombreRuta(viaje) }}</td>
+              <td>{{ nombreAutobus(viaje) }}</td>
+              <td>{{ nombreConductor(viaje) }}</td>
+              <td>{{ viaje.cupos_disponibles ?? '—' }}</td>
+              <td>
+                <span [class]="estadoBadge(viaje.estado)">
+                  {{ viaje.estado ?? 'SIN ESTADO' }}
+                </span>
+              </td>
+              <td class="table__acciones">
+                @if (viaje.estado === 'PROGRAMADO' && (viaje.cupos_disponibles ?? 0) > 0) {
+                  <a
+                    class="btn btn--link"
+                    [routerLink]="['/main/reservas/nuevo']"
+                    [queryParams]="{ id_viaje: viaje.id_viaje }"
+                  >
+                    Reservar
+                  </a>
+                }
+                @if (esAdministrador()) {
+                  @if (viaje.estado === 'PROGRAMADO') {
+                    <a class="btn btn--link" [routerLink]="['/main/viajes/editar', viaje.id_viaje]">Editar</a>
+                  }
+                  <button class="btn btn--link" type="button" (click)="verReservas(viaje)">Ver reservas</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <app-ver-reservas-modal
+    [isOpen]="mostrarModalReservas()"
+    [viaje]="viajeSeleccionadoReservas()"
+    (close)="cerrarModalReservas()"
+  ></app-ver-reservas-modal>
+</section>

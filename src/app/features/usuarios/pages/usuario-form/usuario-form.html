@@ -1,1 +1,124 @@
-<p>usuario-form works!</p>
+<section class="page">
+  @if (creado(); as usuario) {
+    <div class="form__success">
+      <div class="form__success-icon">✓</div>
+      <h1 class="form__title">Usuario creado correctamente</h1>
+      <p class="form__success-text">
+        Entrega estas credenciales temporales a {{ usuario.nombres }} {{ usuario.apellidos }}.
+        El usuario deberá usarlas para su primer acceso.
+      </p>
+
+      <div class="form__credentials">
+        <div class="form__credential">
+          <span class="form__credential-label">Usuario (correo)</span>
+          <span class="form__credential-value">{{ usuario.correo }}</span>
+        </div>
+        <div class="form__credential">
+          <span class="form__credential-label">Contraseña temporal</span>
+          <span class="form__credential-value form__credential-value--strong">
+            {{ usuario.password_temporal ?? usuario.identificacion }}
+          </span>
+        </div>
+      </div>
+
+      <div class="form__success-actions">
+        <button class="btn btn--primary" type="button" (click)="copiarCredencial()">
+          {{ copiado() ? 'Copiado ✓' : 'Copiar credenciales' }}
+        </button>
+        <button class="btn btn--secondary" type="button" (click)="finalizar()">
+          Ir a la lista de usuarios
+        </button>
+      </div>
+    </div>
+  } @else {
+    <header class="page__header">
+      <h1 class="page__title">{{ esEdicion() ? 'Editar usuario' : 'Nuevo usuario' }}</h1>
+      <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+    </header>
+
+    @if (error()) {
+      <div class="alert alert--danger">{{ error() }}</div>
+    }
+
+    <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (loading()) {
+        <div class="form__loading">Cargando…</div>
+      }
+
+      <div class="form__grid">
+        <div class="form__field">
+          <label class="form__label" for="identificacion">Identificación *</label>
+          <input class="form__input" id="identificacion" formControlName="identificacion" />
+          @if (mostrarError('identificacion')) {
+            <span class="form__error">La identificación es obligatoria.</span>
+          }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="nombres">Nombres *</label>
+          <input class="form__input" id="nombres" formControlName="nombres" />
+          @if (mostrarError('nombres')) {
+            <span class="form__error">El nombre es obligatorio.</span>
+          }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="apellidos">Apellidos *</label>
+          <input class="form__input" id="apellidos" formControlName="apellidos" />
+          @if (mostrarError('apellidos')) {
+            <span class="form__error">El apellido es obligatorio.</span>
+          }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="correo">Correo electrónico *</label>
+          <input class="form__input" id="correo" type="email" formControlName="correo" />
+          @if (mostrarError('correo')) {
+            <span class="form__error">
+              {{
+                form.controls.correo.hasError('required')
+                  ? 'El correo es obligatorio.'
+                  : 'Ingresa un correo válido.'
+              }}
+            </span>
+          }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="telefono">Teléfono</label>
+          <input class="form__input" id="telefono" formControlName="telefono" />
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="tipo_usuario">Tipo de usuario *</label>
+          <select class="form__input" id="tipo_usuario" formControlName="tipo_usuario">
+            <option value="" disabled>Selecciona un tipo</option>
+            @for (tipo of tiposUsuario; track tipo) {
+              <option [value]="tipo">{{ tipo }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="id_rol">Rol *</label>
+          <select class="form__input" id="id_rol" formControlName="id_rol">
+            <option [ngValue]="null" disabled>Selecciona un rol</option>
+            @for (rol of roles(); track rol.id_rol) {
+              <option [ngValue]="rol.id_rol">{{ rol.nombre }}</option>
+            }
+          </select>
+          @if (mostrarError('id_rol')) {
+            <span class="form__error">El rol es obligatorio.</span>
+          }
+        </div>
+      </div>
+
+      <div class="form__actions">
+        <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+        <button class="btn btn--primary" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Guardando…' : esEdicion() ? 'Guardar cambios' : 'Crear usuario' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

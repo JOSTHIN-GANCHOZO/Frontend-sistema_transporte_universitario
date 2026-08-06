@@ -1,1 +1,28 @@
-<p>navbar works!</p>
+<header class="navbar">
+  <button
+    class="navbar__menu"
+    type="button"
+    aria-label="Abrir menú"
+    (click)="menuClick.emit()"
+  >
+    <app-icon nombre="menu" />
+  </button>
+
+  <div class="navbar__user">
+    <div class="navbar__usuario">
+      <span class="navbar__nombre">{{ usuarioActual()?.nombres }} {{ usuarioActual()?.apellidos }}</span>
+      <span class="navbar__rol">{{ usuarioActual()?.Rol?.nombre }}</span>
+    </div>
+    <button class="navbar__logout" type="button" (click)="solicitarCierre()">Cerrar sesión</button>
+  </div>
+</header>
+
+@if (dialogoVisible()) {
+  <app-confirm-dialog
+    titulo="Cerrar sesión"
+    mensaje="¿Estás seguro de que deseas cerrar la sesión?"
+    textoConfirmar="Cerrar sesión"
+    (confirmado)="confirmarCierre()"
+    (cancelado)="cancelarCierre()"
+  />
+}

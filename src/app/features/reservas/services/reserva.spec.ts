@@ -1,13 +1,16 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { Reserva } from './reserva';
+import { ReservaService } from './reserva';
 
-describe('Reserva', () => {
-  let service: Reserva;
+describe('ReservaService', () => {
+  let service: ReservaService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Reserva);
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient()],
+    });
+    service = TestBed.inject(ReservaService);
   });
 
   it('should be created', () => {

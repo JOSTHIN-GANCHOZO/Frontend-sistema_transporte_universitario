@@ -1,0 +1,59 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Mantenimientos</h1>
+    <a class="btn btn--primary" routerLink="/main/mantenimientos/nuevo">Nuevo mantenimiento</a>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando mantenimientos…</div>
+  } @else if (mantenimientos().length === 0) {
+    <div class="empty-state">No hay mantenimientos registrados.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Autobús</th>
+            <th>Tipo</th>
+            <th>Costo</th>
+            <th>Estado</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (mantenimiento of mantenimientos(); track mantenimiento.id_mantenimiento) {
+            <tr>
+              <td>{{ mantenimiento.fecha_inicio | date:'dd/MM/yyyy' }}</td>
+              <td>{{ mantenimiento.fecha_fin ? (mantenimiento.fecha_fin | date:'dd/MM/yyyy') : '—' }}</td>
+              <td>{{ nombreAutobus(mantenimiento) }}</td>
+              <td>{{ mantenimiento.tipo_mantenimiento ?? '—' }}</td>
+              <td>{{ mantenimiento.costo ? (mantenimiento.costo | currency:'USD') : '—' }}</td>
+              <td>
+                <span [class]="estadoBadge(mantenimiento.estado)">
+                  {{ mantenimiento.estado ?? 'SIN ESTADO' }}
+                </span>
+              </td>
+              <td class="table__acciones">
+                <button class="btn btn--link" style="color: var(--primary-color);" type="button" (click)="verMantenimiento(mantenimiento)">Ver</button>
+                <a class="btn btn--link" [routerLink]="['/main/mantenimientos/editar', mantenimiento.id_mantenimiento]">Editar</a>
+                <button class="btn btn--link" style="color: var(--danger-color, #ef4444);" type="button" (click)="eliminarMantenimiento(mantenimiento.id_mantenimiento)">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <app-mantenimiento-detail-modal
+    [isOpen]="modalOpen()"
+    [mantenimiento]="selectedMantenimiento()"
+    (close)="modalOpen.set(false)"
+  ></app-mantenimiento-detail-modal>
+</section>
