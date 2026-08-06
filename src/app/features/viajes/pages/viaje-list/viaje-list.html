@@ -41,15 +41,9 @@
                 </span>
               </td>
               <td class="table__acciones">
-                @if (viaje.estado === 'PROGRAMADO' && (viaje.cupos_disponibles ?? 0) > 0) {
-                  <a
-                    class="btn btn--link"
-                    [routerLink]="['/main/reservas/nuevo']"
-                    [queryParams]="{ id_viaje: viaje.id_viaje }"
-                  >
-                    Reservar
-                  </a>
-                }
+                <a class="btn btn--link" [routerLink]="['/main/viajes', viaje.id_viaje]">
+                  Ver detalle
+                </a>
               </td>
             </tr>
           }
