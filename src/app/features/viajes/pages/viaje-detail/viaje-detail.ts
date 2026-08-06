@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Auth } from '../../../../core/services/auth';
@@ -9,7 +10,7 @@ import { ViajeService } from '../../services/viaje';
 
 @Component({
   selector: 'app-viaje-detail',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './viaje-detail.html',
   styleUrl: './viaje-detail.css',
 })
