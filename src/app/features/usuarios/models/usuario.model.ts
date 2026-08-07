@@ -23,6 +23,7 @@ export interface Usuario {
   telefono: string | null;
   tipo_usuario: TipoUsuario;
   id_rol: number;
+  es_admin_principal?: boolean;
   fecha_eliminacion?: string | null;
   Rol?: Rol | null;
   Credencial?: Credencial | null;

@@ -1,7 +1,9 @@
 <section class="page">
   <header class="page__header">
     <h1 class="page__title">Paradas</h1>
-    <a class="btn btn--primary" routerLink="nuevo">+ Nueva parada</a>
+    @if (esAdminPrincipal()) {
+      <a class="btn btn--primary" routerLink="nuevo">+ Nueva parada</a>
+    }
   </header>
 
   @if (error()) {
@@ -32,10 +34,12 @@
               <td>{{ parada.direccion ?? '—' }}</td>
               <td>{{ parada.ubicacion_referencia ?? '—' }}</td>
               <td class="table__acciones">
-                <a class="btn btn--link" [routerLink]="[parada.id_parada]">Editar</a>
-                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(parada)">
-                  Eliminar
-                </button>
+                @if (esAdminPrincipal()) {
+                  <a class="btn btn--link" [routerLink]="[parada.id_parada]">Editar</a>
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(parada)">
+                    Eliminar
+                  </button>
+                }
               </td>
             </tr>
           }

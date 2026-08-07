@@ -1,7 +1,9 @@
 <section class="page">
   <header class="page__header">
     <h1 class="page__title">Conductores</h1>
-    <a class="btn btn--primary" routerLink="nuevo">+ Nuevo conductor</a>
+    @if (esAdminPrincipal()) {
+      <a class="btn btn--primary" routerLink="nuevo">+ Nuevo conductor</a>
+    }
   </header>
 
   @if (error()) {
@@ -43,10 +45,12 @@
                 }
               </td>
               <td class="table__acciones">
-                <a class="btn btn--link" [routerLink]="[conductor.id_conductor]">Editar</a>
-                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(conductor)">
-                  Eliminar
-                </button>
+                @if (esAdminPrincipal()) {
+                  <a class="btn btn--link" [routerLink]="[conductor.id_conductor]">Editar</a>
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(conductor)">
+                    Eliminar
+                  </button>
+                }
               </td>
             </tr>
           }

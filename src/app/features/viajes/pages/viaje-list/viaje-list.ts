@@ -1,20 +1,31 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { Auth } from '../../../../core/services/auth';
+import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Viaje } from '../../models/viaje.model';
 import { ViajeService } from '../../services/viaje';
 
 @Component({
   selector: 'app-viaje-list',
-  imports: [RouterLink],
+  imports: [RouterLink, ConfirmDialog],
   templateUrl: './viaje-list.html',
 })
 export class ViajeList {
+  private readonly auth = inject(Auth);
   private readonly viajeService = inject(ViajeService);
 
   readonly viajes = signal<Viaje[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+
+  readonly dialogoVisible = signal(false);
+  readonly viajeAEliminar = signal<Viaje | null>(null);
+  readonly eliminando = signal(false);
+
+  esAdminPrincipal(): boolean {
+    return this.auth.esAdminPrincipal();
+  }
 
   constructor() {
     this.cargar();
@@ -72,5 +83,37 @@ export class ViajeList {
       return '—';
     }
     return hora.length > 5 ? hora.slice(0, 5) : hora;
+  }
+
+  pedirEliminar(viaje: Viaje): void {
+    this.viajeAEliminar.set(viaje);
+    this.dialogoVisible.set(true);
+  }
+
+  cancelarEliminacion(): void {
+    this.dialogoVisible.set(false);
+    this.viajeAEliminar.set(null);
+  }
+
+  confirmarEliminacion(): void {
+    const viaje = this.viajeAEliminar();
+    if (!viaje) {
+      return;
+    }
+
+    this.eliminando.set(true);
+
+    this.viajeService.eliminar(viaje.id_viaje ?? 0).subscribe({
+      next: () => {
+        this.eliminando.set(false);
+        this.dialogoVisible.set(false);
+        this.viajeAEliminar.set(null);
+        this.cargar();
+      },
+      error: () => {
+        this.eliminando.set(false);
+        this.error.set('No se pudo eliminar el viaje.');
+      },
+    });
   }
 }

@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 
+import { Auth } from '../../../../core/services/auth';
 import { Mantenimiento } from '../../models/mantenimiento.model';
 import { MantenimientoService } from '../../services/mantenimiento';
 import { MantenimientoDetailModal } from '../../components/mantenimiento-detail-modal/mantenimiento-detail-modal';
@@ -12,8 +13,13 @@ import { MantenimientoDetailModal } from '../../components/mantenimiento-detail-
   templateUrl: './mantenimiento-list.html',
 })
 export class MantenimientoList {
+  private readonly auth = inject(Auth);
   private readonly mantenimientoService = inject(MantenimientoService);
   private readonly route = inject(ActivatedRoute);
+
+  esAdminPrincipal(): boolean {
+    return this.auth.esAdminPrincipal();
+  }
 
   readonly mantenimientos = signal<Mantenimiento[]>([]);
   readonly loading = signal(true);
@@ -26,7 +32,12 @@ export class MantenimientoList {
     if (filtro == null) {
       return this.mantenimientos();
     }
-    return this.mantenimientos().filter((m) => m.id_autobus === filtro);
+    // Vista de historial desde el módulo de autobuses: solo realizados y pendientes
+    return this.mantenimientos().filter(
+      (m) =>
+        m.id_autobus === filtro &&
+        (m.estado === 'COMPLETADO' || m.estado === 'PENDIENTE' || m.estado === 'EN_PROCESO')
+    );
   });
 
   constructor() {

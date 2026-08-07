@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { Auth } from '../../../../core/services/auth';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Parada } from '../../models/parada.model';
 import { ParadaService } from '../../services/parada';
@@ -11,7 +12,12 @@ import { ParadaService } from '../../services/parada';
   templateUrl: './parada-list.html',
 })
 export class ParadaList {
+  private readonly auth = inject(Auth);
   private readonly paradaService = inject(ParadaService);
+
+  esAdminPrincipal(): boolean {
+    return this.auth.esAdminPrincipal();
+  }
 
   readonly paradas = signal<Parada[]>([]);
   readonly loading = signal(true);

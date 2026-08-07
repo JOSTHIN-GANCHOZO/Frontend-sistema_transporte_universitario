@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { Auth } from '../../../../core/services/auth';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Conductor } from '../../models/conductor.model';
 import { ConductorService } from '../../services/conductor';
@@ -11,7 +12,12 @@ import { ConductorService } from '../../services/conductor';
   templateUrl: './conductor-list.html',
 })
 export class ConductorList {
+  private readonly auth = inject(Auth);
   private readonly conductorService = inject(ConductorService);
+
+  esAdminPrincipal(): boolean {
+    return this.auth.esAdminPrincipal();
+  }
 
   readonly conductores = signal<Conductor[]>([]);
   readonly loading = signal(true);

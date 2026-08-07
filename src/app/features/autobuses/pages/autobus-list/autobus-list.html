@@ -1,7 +1,9 @@
 <section class="page">
   <header class="page__header">
     <h1 class="page__title">Autobuses</h1>
-    <a class="btn btn--primary" routerLink="nuevo">+ Nuevo autobús</a>
+    @if (esAdminPrincipal()) {
+      <a class="btn btn--primary" routerLink="nuevo">+ Nuevo autobús</a>
+    }
   </header>
 
   @if (error()) {
@@ -42,7 +44,9 @@
                 </span>
               </td>
               <td class="table__acciones">
-                <a class="btn btn--link" [routerLink]="[autobus.id_autobus]">Editar</a>
+                @if (esAdminPrincipal()) {
+                  <a class="btn btn--link" [routerLink]="[autobus.id_autobus]">Editar</a>
+                }
                 <a
                   class="btn btn--link"
                   [routerLink]="['/main/mantenimientos']"
@@ -50,9 +54,11 @@
                 >
                   Mantenimientos
                 </a>
-                <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(autobus)">
-                  Eliminar
-                </button>
+                @if (esAdminPrincipal()) {
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(autobus)">
+                    Eliminar
+                  </button>
+                }
               </td>
             </tr>
           }

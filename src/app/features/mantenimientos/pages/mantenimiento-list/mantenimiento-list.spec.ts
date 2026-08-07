@@ -31,6 +31,18 @@ const listado: Mantenimiento[] = [
       estado: 'DISPONIBLE',
     } as never,
   } as unknown as Mantenimiento,
+  {
+    id_mantenimiento: 3,
+    fecha_inicio: '2026-03-01',
+    id_autobus: 2,
+    estado: 'CANCELADO',
+    Autobus: {
+      id_autobus: 2,
+      placa: 'AUT-001',
+      numero_interno: 'B-002',
+      estado: 'DISPONIBLE',
+    } as never,
+  } as unknown as Mantenimiento,
 ];
 
 function rutaPara(query: number | null): any {
@@ -83,6 +95,13 @@ describe('MantenimientoList', () => {
     expect(component.autobusFiltro()).toBe(2);
     expect(component.mantenimientosFiltrados().length).toBe(1);
     expect(component.mantenimientosFiltrados()[0].id_autobus).toBe(2);
+    expect(component.mantenimientosFiltrados()[0].estado).toBe('COMPLETADO');
+  });
+
+  it('con ?autobus= excluye los mantenimientos CANCELADO del historial', async () => {
+    await configurar(2);
+
+    expect(component.mantenimientosFiltrados().some((m) => m.estado === 'CANCELADO')).toBe(false);
   });
 
   it('nombreAutobusFiltro muestra la placa del autobús filtrado', async () => {

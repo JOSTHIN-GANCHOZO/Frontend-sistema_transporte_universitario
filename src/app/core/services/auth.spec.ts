@@ -92,6 +92,24 @@ describe('Auth', () => {
     });
   });
 
+  describe('esAdminPrincipal', () => {
+    it('devuelve true cuando el usuario actual es administrador principal', () => {
+      service.usuarioActual.set({ ...usuarioActivo, es_admin_principal: true });
+
+      expect(service.esAdminPrincipal()).toBe(true);
+    });
+
+    it('devuelve false cuando el usuario actual no es administrador principal', () => {
+      service.usuarioActual.set(usuarioActivo);
+
+      expect(service.esAdminPrincipal()).toBe(false);
+    });
+
+    it('devuelve false sin usuario autenticado', () => {
+      expect(service.esAdminPrincipal()).toBe(false);
+    });
+  });
+
   describe('login', () => {
     it('guarda la bandera cuando el servidor pide cambio de contraseña', () => {
       const http = TestBed.inject(HttpClient);

@@ -60,6 +60,12 @@
             <option [value]="estado">{{ estado }}</option>
           }
         </select>
+        @if (mostrarAvisoOtrosMantenimientos()) {
+          <span class="form__error">
+            Este autobús tiene {{ otrosMantenimientosActivos() }} otro(s) mantenimiento(s) activo(s);
+            continuará en EN_MANTENIMIENTO hasta que se completen o cancelen.
+          </span>
+        }
       </div>
       
       <div class="form__field form__field--full">

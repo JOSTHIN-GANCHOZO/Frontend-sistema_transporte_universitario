@@ -33,6 +33,7 @@ export class UsuarioForm {
     telefono: [''],
     tipo_usuario: ['', Validators.required],
     id_rol: [null as number | null, Validators.required],
+    es_admin_principal: [false],
   });
 
   constructor() {
@@ -73,6 +74,7 @@ export class UsuarioForm {
           telefono: usuario.telefono ?? '',
           tipo_usuario: usuario.tipo_usuario,
           id_rol: usuario.id_rol,
+          es_admin_principal: usuario.es_admin_principal === true,
         });
         this.loading.set(false);
       },
@@ -101,6 +103,7 @@ export class UsuarioForm {
       telefono: datos.telefono ?? '',
       tipo_usuario: (datos.tipo_usuario as Usuario['tipo_usuario']) ?? 'ESTUDIANTE',
       id_rol: Number(datos.id_rol),
+      es_admin_principal: datos.es_admin_principal === true,
     };
 
     if (this.esEdicion()) {

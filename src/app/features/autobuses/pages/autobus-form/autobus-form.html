@@ -65,14 +65,13 @@
         }
       </div>
 
-      <div class="form__field">
-        <label class="form__label" for="estado">Estado *</label>
-        <select class="form__input" id="estado" formControlName="estado">
-          @for (estado of estadosAutobus; track estado) {
-            <option [value]="estado">{{ estado }}</option>
-          }
-        </select>
-      </div>
+      @if (esEdicion()) {
+        <div class="form__field">
+          <span class="form__label">Estado actual</span>
+          <span [class]="estadoBadge()">{{ estadoActual() }}</span>
+          <small class="form__hint">El estado se gestiona automáticamente con los mantenimientos.</small>
+        </div>
+      }
     </div>
 
     <div class="form__actions">

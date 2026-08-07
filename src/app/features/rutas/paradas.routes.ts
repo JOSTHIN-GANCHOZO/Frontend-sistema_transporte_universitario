@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 
+import { adminPrincipalGuard } from '../../core/guards/admin-principal-guard';
 import { ParadaForm } from './pages/parada-form/parada-form';
 import { ParadaList } from './pages/parada-list/parada-list';
 
 export const paradasRoutes: Routes = [
   { path: '', component: ParadaList },
-  { path: 'nuevo', component: ParadaForm },
-  { path: ':id', component: ParadaForm },
+  { path: 'nuevo', component: ParadaForm, canActivate: [adminPrincipalGuard] },
+  { path: ':id', component: ParadaForm, canActivate: [adminPrincipalGuard] },
 ];

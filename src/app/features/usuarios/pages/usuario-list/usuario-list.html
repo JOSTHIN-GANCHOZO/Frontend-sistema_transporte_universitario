@@ -1,7 +1,9 @@
 <section class="page">
   <header class="page__header">
     <h1 class="page__title">Usuarios</h1>
-    <a class="btn btn--primary" routerLink="nuevo">+ Nuevo usuario</a>
+    @if (esAdminPrincipal()) {
+      <a class="btn btn--primary" routerLink="nuevo">+ Nuevo usuario</a>
+    }
   </header>
 
   @if (error()) {
@@ -35,18 +37,24 @@
               <td>{{ usuario.correo }}</td>
               <td>{{ usuario.telefono ?? '—' }}</td>
               <td><span class="badge badge-info">{{ usuario.tipo_usuario }}</span></td>
-              <td>{{ usuario.Rol?.nombre }}</td>
+              <td>{{ usuario.Rol?.nombre }}
+                @if (usuario.es_admin_principal) {
+                  <span class="badge badge-success">Principal</span>
+                }
+              </td>
               <td>
                 <span [class]="estadoBadge(usuario.Credencial?.estado)">
                   {{ usuario.Credencial?.estado ?? 'SIN CREDENCIAL' }}
                 </span>
               </td>
               <td class="table__acciones">
-                <a class="btn btn--link" [routerLink]="[usuario.id_usuario]">Editar</a>
-                @if (!noGestionable(usuario)) {
-                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(usuario)">
-                    Eliminar
-                  </button>
+                @if (esAdminPrincipal()) {
+                  <a class="btn btn--link" [routerLink]="[usuario.id_usuario]">Editar</a>
+                  @if (!noGestionable(usuario)) {
+                    <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(usuario)">
+                      Eliminar
+                    </button>
+                  }
                 }
               </td>
             </tr>

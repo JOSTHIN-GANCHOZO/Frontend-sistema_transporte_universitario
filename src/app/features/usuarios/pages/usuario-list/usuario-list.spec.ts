@@ -17,6 +17,7 @@ const adminPrincipal: Usuario = {
   id_rol: 1,
   Rol: { id_rol: 1, nombre: 'ADMINISTRATIVO' },
   Credencial: { estado: 'ACTIVA' },
+  es_admin_principal: true,
 };
 
 const segundoAdmin: Usuario = {
@@ -26,6 +27,7 @@ const segundoAdmin: Usuario = {
   nombres: 'Carlos',
   apellidos: 'García',
   correo: 'carlos@universidad.edu',
+  es_admin_principal: true,
 };
 
 const pasajero: Usuario = {
@@ -72,14 +74,14 @@ describe('UsuarioList', () => {
       expect(component.noGestionable(adminPrincipal)).toBe(true);
     });
 
-    it('bloquea al único administrador activo del sistema', () => {
+    it('bloquea al único administrador principal activo del sistema', () => {
       auth.usuarioActual.set(adminPrincipal);
       component.usuarios.set([adminPrincipal, pasajero]);
 
       expect(component.noGestionable(adminPrincipal)).toBe(true);
     });
 
-    it('permite gestionar a un administrador y no al otro cuando hay al menos dos activos', () => {
+    it('permite gestionar al otro administrador principal cuando hay al menos dos activos', () => {
       auth.usuarioActual.set(adminPrincipal);
       component.usuarios.set([adminPrincipal, segundoAdmin, pasajero]);
 

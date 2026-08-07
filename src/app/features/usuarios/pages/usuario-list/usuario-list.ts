@@ -23,6 +23,10 @@ export class UsuarioList {
   readonly usuarioAEliminar = signal<Usuario | null>(null);
   readonly eliminando = signal(false);
 
+  esAdminPrincipal(): boolean {
+    return this.auth.esAdminPrincipal();
+  }
+
   constructor() {
     this.cargar();
   }
@@ -48,14 +52,13 @@ export class UsuarioList {
     if (usuarioActual && usuario.id_usuario === usuarioActual.id_usuario) {
       return true;
     }
-    const esAdministrativo = usuario.Rol?.nombre === 'ADMINISTRATIVO';
-    if (!esAdministrativo) {
+    if (usuario.es_admin_principal !== true) {
       return false;
     }
     return !this.usuarios().some(
       (u) =>
         u.id_usuario !== usuario.id_usuario &&
-        u.Rol?.nombre === 'ADMINISTRATIVO' &&
+        u.es_admin_principal === true &&
         u.Credencial?.estado === 'ACTIVA'
     );
   }

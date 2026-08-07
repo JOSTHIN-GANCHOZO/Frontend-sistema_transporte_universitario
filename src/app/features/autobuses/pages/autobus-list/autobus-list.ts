@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { Auth } from '../../../../core/services/auth';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { Autobus } from '../../models/autobus.model';
 import { AutobusService } from '../../services/autobus';
@@ -11,7 +12,12 @@ import { AutobusService } from '../../services/autobus';
   templateUrl: './autobus-list.html',
 })
 export class AutobusList {
+  private readonly auth = inject(Auth);
   private readonly autobusService = inject(AutobusService);
+
+  esAdminPrincipal(): boolean {
+    return this.auth.esAdminPrincipal();
+  }
 
   readonly autobuses = signal<Autobus[]>([]);
   readonly loading = signal(true);

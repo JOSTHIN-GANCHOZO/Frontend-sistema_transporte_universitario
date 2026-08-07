@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Autobus, ESTADOS_AUTOBUS, EstadoAutobus } from '../../models/autobus.model';
+import { Autobus, EstadoAutobus } from '../../models/autobus.model';
 import { AutobusService } from '../../services/autobus';
 
 @Component({
@@ -17,10 +17,10 @@ export class AutobusForm {
   private readonly router = inject(Router);
   private readonly autobusService = inject(AutobusService);
 
-  readonly estadosAutobus = ESTADOS_AUTOBUS;
   readonly esEdicion = signal(false);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly estadoActual = signal('DISPONIBLE');
 
   readonly form = this.fb.group({
     placa: ['', Validators.required],
@@ -29,7 +29,6 @@ export class AutobusForm {
     modelo: [''],
     año: [null as number | null],
     capacidad_maxima: [null as number | null, [Validators.required, Validators.min(1)]],
-    estado: ['DISPONIBLE' as EstadoAutobus, Validators.required],
   });
 
   constructor() {
@@ -52,8 +51,8 @@ export class AutobusForm {
           modelo: autobus.modelo ?? '',
           año: autobus.año ?? null,
           capacidad_maxima: autobus.capacidad_maxima,
-          estado: autobus.estado ?? 'DISPONIBLE',
         });
+        this.estadoActual.set(autobus.estado ?? 'DISPONIBLE');
         this.loading.set(false);
       },
       error: () => {
@@ -80,7 +79,6 @@ export class AutobusForm {
       modelo: datos.modelo || undefined,
       año: datos.año ?? undefined,
       capacidad_maxima: Number(datos.capacidad_maxima),
-      estado: (datos.estado as EstadoAutobus) ?? 'DISPONIBLE',
     };
 
     if (this.esEdicion()) {
@@ -95,13 +93,28 @@ export class AutobusForm {
       return;
     }
 
-    this.autobusService.crear(payload).subscribe({
+    this.autobusService.crear({ ...payload, estado: 'DISPONIBLE' as EstadoAutobus }).subscribe({
       next: () => this.router.navigate(['/main/autobuses']),
       error: (err) => {
         this.loading.set(false);
         this.error.set(err.error?.mensaje ?? 'No se pudo crear el autobús.');
       },
     });
+  }
+
+  estadoBadge(): string {
+    switch (this.estadoActual()) {
+      case 'DISPONIBLE':
+        return 'badge badge-success';
+      case 'EN_SERVICIO':
+        return 'badge badge-info';
+      case 'EN_MANTENIMIENTO':
+        return 'badge badge-warning';
+      case 'FUERA_DE_SERVICIO':
+        return 'badge badge-danger';
+      default:
+        return 'badge badge-info';
+    }
   }
 
   volver(): void {

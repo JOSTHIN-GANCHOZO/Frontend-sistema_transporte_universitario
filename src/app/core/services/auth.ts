@@ -65,6 +65,10 @@ export class Auth {
     return this.usuarioActual()?.Rol?.nombre === 'ADMINISTRATIVO';
   }
 
+  esAdminPrincipal(): boolean {
+    return this.usuarioActual()?.es_admin_principal === true;
+  }
+
   rolActual(): string | null {
     return this.usuarioActual()?.Rol?.nombre ?? null;
   }

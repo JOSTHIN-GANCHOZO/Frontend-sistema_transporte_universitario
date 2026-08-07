@@ -24,6 +24,7 @@ export class MantenimientoForm implements OnInit {
   readonly esEdicion = signal(false);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly otrosMantenimientosActivos = signal(0);
 
   readonly autobuses = signal<Autobus[]>([]);
 
@@ -84,6 +85,21 @@ export class MantenimientoForm implements OnInit {
           estado: mantenimiento.estado ?? 'PENDIENTE',
           id_autobus: mantenimiento.id_autobus
         });
+
+        // Contar otros mantenimientos activos del mismo autobús (para el aviso al cerrar)
+        this.mantenimientoService.listar().subscribe({
+          next: (todos) => {
+            this.otrosMantenimientosActivos.set(
+              todos.filter(
+                (m) =>
+                  m.id_autobus === mantenimiento.id_autobus &&
+                  m.id_mantenimiento !== mantenimiento.id_mantenimiento &&
+                  (m.estado === 'PENDIENTE' || m.estado === 'EN_PROCESO')
+              ).length
+            );
+          },
+        });
+
         this.loading.set(false);
       },
       error: () => {
@@ -91,6 +107,15 @@ export class MantenimientoForm implements OnInit {
         this.error.set('No se pudo cargar el mantenimiento.');
       },
     });
+  }
+
+  mostrarAvisoOtrosMantenimientos(): boolean {
+    const estado = this.form.controls.estado.value;
+    return (
+      this.esEdicion() &&
+      (estado === 'COMPLETADO' || estado === 'CANCELADO') &&
+      this.otrosMantenimientosActivos() > 0
+    );
   }
 
   onSubmit(): void {

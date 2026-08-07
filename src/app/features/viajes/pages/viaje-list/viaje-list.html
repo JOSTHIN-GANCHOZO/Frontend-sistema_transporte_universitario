@@ -1,6 +1,9 @@
 <section class="page">
   <header class="page__header">
     <h1 class="page__title">Viajes</h1>
+    @if (esAdminPrincipal()) {
+      <a class="btn btn--primary" routerLink="nuevo">+ Nuevo viaje</a>
+    }
   </header>
 
   @if (error()) {
@@ -44,6 +47,14 @@
                 <a class="btn btn--link" [routerLink]="['/main/viajes', viaje.id_viaje]">
                   Ver detalle
                 </a>
+                @if (esAdminPrincipal() && viaje.estado === 'PROGRAMADO') {
+                  <a class="btn btn--link" [routerLink]="['/main/viajes/editar', viaje.id_viaje]">
+                    Editar
+                  </a>
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(viaje)">
+                    Eliminar
+                  </button>
+                }
               </td>
             </tr>
           }
@@ -52,3 +63,19 @@
     </div>
   }
 </section>
+
+@if (dialogoVisible() && viajeAEliminar()) {
+  <app-confirm-dialog
+    titulo="Eliminar viaje"
+    [mensaje]="
+      '¿Estás seguro de eliminar el viaje del ' +
+      (viajeAEliminar()?.fecha ?? '') +
+      ' (' +
+      nombreRuta(viajeAEliminar()!) +
+      ')? Esta acción no se puede deshacer.'
+    "
+    textoConfirmar="Eliminar"
+    (confirmado)="confirmarEliminacion()"
+    (cancelado)="cancelarEliminacion()"
+  />
+}
