@@ -26,11 +26,11 @@ export class UsuarioForm {
   readonly copiado = signal(false);
 
   readonly form = this.fb.group({
-    identificacion: ['', Validators.required],
-    nombres: ['', Validators.required],
-    apellidos: ['', Validators.required],
+    identificacion: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    nombres: ['', [Validators.required, Validators.pattern(/^\D+$/)]],
+    apellidos: ['', [Validators.required, Validators.pattern(/^\D+$/)]],
     correo: ['', [Validators.required, Validators.email]],
-    telefono: [''],
+    telefono: ['', [Validators.pattern(/^\d{10}$/)]],
     tipo_usuario: ['', Validators.required],
     id_rol: [null as number | null, Validators.required],
     es_admin_principal: [false],
@@ -166,5 +166,23 @@ export class UsuarioForm {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  soloNumeros(campo: 'identificacion' | 'telefono'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/\D/g, '').slice(0, 10) ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloLetras(campo: 'nombres' | 'apellidos'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/[0-9]/g, '') ?? '';
+    control.setValue(valor, { emitEvent: false });
   }
 }

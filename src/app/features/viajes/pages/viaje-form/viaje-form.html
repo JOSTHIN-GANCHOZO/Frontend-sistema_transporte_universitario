@@ -16,15 +16,34 @@
     <div class="form__grid">
       <div class="form__field">
         <label class="form__label" for="fecha">Fecha *</label>
-        <input class="form__input" id="fecha" type="date" formControlName="fecha" />
+        <input
+          class="form__input"
+          id="fecha"
+          type="date"
+          formControlName="fecha"
+          [min]="fechaMinima"
+          placeholder="AAAA-MM-DD"
+        />
         @if (mostrarError('fecha')) {
-          <span class="form__error">La fecha es obligatoria.</span>
+          <span class="form__error">
+            {{
+              form.controls.fecha.hasError('required')
+                ? 'La fecha es obligatoria.'
+                : 'La fecha del viaje no puede ser anterior a hoy.'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="hora_salida">Hora de salida *</label>
-        <input class="form__input" id="hora_salida" type="time" formControlName="hora_salida" />
+        <input
+          class="form__input"
+          id="hora_salida"
+          type="time"
+          formControlName="hora_salida"
+          placeholder="HH:MM"
+        />
         @if (mostrarError('hora_salida')) {
           <span class="form__error">La hora de salida es obligatoria.</span>
         }
@@ -32,7 +51,16 @@
 
       <div class="form__field">
         <label class="form__label" for="hora_llegada_estimada">Hora de llegada estimada</label>
-        <input class="form__input" id="hora_llegada_estimada" type="time" formControlName="hora_llegada_estimada" />
+        <input
+          class="form__input"
+          id="hora_llegada_estimada"
+          type="time"
+          formControlName="hora_llegada_estimada"
+          placeholder="HH:MM"
+        />
+        @if (mostrarError('hora_llegada_estimada')) {
+          <span class="form__error">La hora de llegada debe ser posterior a la hora de salida.</span>
+        }
       </div>
 
       <div class="form__field">

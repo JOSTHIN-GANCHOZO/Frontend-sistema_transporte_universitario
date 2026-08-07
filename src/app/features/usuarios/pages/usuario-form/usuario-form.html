@@ -48,25 +48,61 @@
       <div class="form__grid">
         <div class="form__field">
           <label class="form__label" for="identificacion">Identificación *</label>
-          <input class="form__input" id="identificacion" formControlName="identificacion" />
+          <input
+            class="form__input"
+            id="identificacion"
+            formControlName="identificacion"
+            inputmode="numeric"
+            maxlength="10"
+            (input)="soloNumeros('identificacion')"
+            placeholder="Solo 10 dígitos"
+          />
           @if (mostrarError('identificacion')) {
-            <span class="form__error">La identificación es obligatoria.</span>
+            <span class="form__error">
+              {{
+                form.controls.identificacion.hasError('required')
+                  ? 'La identificación es obligatoria.'
+                  : 'La identificación debe contener solo 10 dígitos numéricos.'
+              }}
+            </span>
           }
         </div>
 
         <div class="form__field">
           <label class="form__label" for="nombres">Nombres *</label>
-          <input class="form__input" id="nombres" formControlName="nombres" />
+          <input
+            class="form__input"
+            id="nombres"
+            formControlName="nombres"
+            (input)="soloLetras('nombres')"
+          />
           @if (mostrarError('nombres')) {
-            <span class="form__error">El nombre es obligatorio.</span>
+            <span class="form__error">
+              {{
+                form.controls.nombres.hasError('required')
+                  ? 'El nombre es obligatorio.'
+                  : 'El nombre no debe contener números.'
+              }}
+            </span>
           }
         </div>
 
         <div class="form__field">
           <label class="form__label" for="apellidos">Apellidos *</label>
-          <input class="form__input" id="apellidos" formControlName="apellidos" />
+          <input
+            class="form__input"
+            id="apellidos"
+            formControlName="apellidos"
+            (input)="soloLetras('apellidos')"
+          />
           @if (mostrarError('apellidos')) {
-            <span class="form__error">El apellido es obligatorio.</span>
+            <span class="form__error">
+              {{
+                form.controls.apellidos.hasError('required')
+                  ? 'El apellido es obligatorio.'
+                  : 'El apellido no debe contener números.'
+              }}
+            </span>
           }
         </div>
 
@@ -86,7 +122,18 @@
 
         <div class="form__field">
           <label class="form__label" for="telefono">Teléfono</label>
-          <input class="form__input" id="telefono" formControlName="telefono" />
+          <input
+            class="form__input"
+            id="telefono"
+            formControlName="telefono"
+            inputmode="numeric"
+            maxlength="10"
+            (input)="soloNumeros('telefono')"
+            placeholder="Solo 10 dígitos"
+          />
+          @if (mostrarError('telefono')) {
+            <span class="form__error">El teléfono debe contener solo 10 dígitos numéricos.</span>
+          }
         </div>
 
         <div class="form__field">

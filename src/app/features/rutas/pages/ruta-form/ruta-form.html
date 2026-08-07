@@ -16,33 +16,85 @@
     <div class="form__grid">
       <div class="form__field">
         <label class="form__label" for="codigo">Código *</label>
-        <input class="form__input" id="codigo" formControlName="codigo" maxlength="20" />
+        <input
+          class="form__input"
+          id="codigo"
+          formControlName="codigo"
+          maxlength="20"
+          (input)="soloCodigo()"
+          placeholder="Ej: URS-NORTE"
+        />
         @if (mostrarError('codigo')) {
-          <span class="form__error">El código es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.codigo.hasError('required')
+                ? 'El código es obligatorio.'
+                : 'El código solo admite letras, números y guiones (máx. 20).'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="nombre">Nombre *</label>
-        <input class="form__input" id="nombre" formControlName="nombre" maxlength="100" />
+        <input
+          class="form__input"
+          id="nombre"
+          formControlName="nombre"
+          maxlength="100"
+          (input)="soloTexto('nombre')"
+          placeholder="Ej: Ruta Norte - Sur"
+        />
         @if (mostrarError('nombre')) {
-          <span class="form__error">El nombre es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.nombre.hasError('required')
+                ? 'El nombre es obligatorio.'
+                : 'El nombre no debe contener números ni símbolos.'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="origen">Origen *</label>
-        <input class="form__input" id="origen" formControlName="origen" maxlength="150" />
+        <input
+          class="form__input"
+          id="origen"
+          formControlName="origen"
+          maxlength="150"
+          (input)="soloTexto('origen')"
+          placeholder="Ej: Campus Universitario"
+        />
         @if (mostrarError('origen')) {
-          <span class="form__error">El origen es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.origen.hasError('required')
+                ? 'El origen es obligatorio.'
+                : 'El origen solo admite letras, números, comas, puntos y guiones.'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="destino">Destino *</label>
-        <input class="form__input" id="destino" formControlName="destino" maxlength="150" />
+        <input
+          class="form__input"
+          id="destino"
+          formControlName="destino"
+          maxlength="150"
+          (input)="soloTexto('destino')"
+          placeholder="Ej: Terminal Terrestre"
+        />
         @if (mostrarError('destino')) {
-          <span class="form__error">El destino es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.destino.hasError('required')
+                ? 'El destino es obligatorio.'
+                : 'El destino solo admite letras, números, comas, puntos y guiones.'
+            }}
+          </span>
         }
       </div>
 
@@ -53,11 +105,13 @@
           id="distancia_estimada"
           type="number"
           min="0"
+          max="10000"
           step="0.01"
           formControlName="distancia_estimada"
+          placeholder="Ej: 12.5"
         />
         @if (mostrarError('distancia_estimada')) {
-          <span class="form__error">La distancia debe ser un valor numérico positivo.</span>
+          <span class="form__error">La distancia debe estar entre 0 y 10000 km.</span>
         }
       </div>
 

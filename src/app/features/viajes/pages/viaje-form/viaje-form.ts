@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Viaje, ESTADOS_VIAJE, EstadoViaje } from '../../models/viaje.model';
@@ -31,19 +31,39 @@ export class ViajeForm implements OnInit {
   readonly esEdicion = signal(false);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly fechaMinima = this.fechaHoyIso();
 
   readonly autobuses = signal<Autobus[]>([]);
   readonly conductores = signal<Conductor[]>([]);
   readonly rutas = signal<Ruta[]>([]);
 
   readonly form = this.fb.group({
-    fecha: ['', Validators.required],
+    fecha: ['', [Validators.required, fechaNoPasada]],
     hora_salida: ['', Validators.required],
     hora_llegada_estimada: [''],
     id_ruta: [null as number | null, Validators.required],
     id_autobus: [null as number | null, Validators.required],
     id_conductor: [null as number | null, Validators.required]
   });
+
+  constructor() {
+    this.form.controls.hora_salida.valueChanges.subscribe(() => this.validarHoras());
+    this.form.controls.hora_llegada_estimada.valueChanges.subscribe(() => this.validarHoras());
+  }
+
+  private validarHoras(): void {
+    const salida = this.form.controls.hora_salida.value;
+    const llegada = this.form.controls.hora_llegada_estimada.value;
+    const controlLlegada = this.form.controls.hora_llegada_estimada;
+
+    if (salida && llegada && llegada <= salida) {
+      controlLlegada.setErrors({ horaLlegadaMenor: true });
+    } else if (controlLlegada.hasError('horaLlegadaMenor')) {
+      controlLlegada.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      const { horaLLegadaMenor: _eliminado, ...restantes } = controlLlegada.errors ?? {};
+      controlLlegada.setErrors(Object.keys(restantes).length > 0 ? restantes : null);
+    }
+  }
 
   ngOnInit() {
     this.cargarDatosDesplegables();
@@ -137,4 +157,28 @@ export class ViajeForm implements OnInit {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
   }
+
+  private fechaHoyIso(): string {
+    const hoy = new Date();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    return `${hoy.getFullYear()}-${mes}-${dia}`;
+  }
+}
+
+function fechaNoPasada(control: AbstractControl): ValidationErrors | null {
+  const valor = control.value as string;
+  if (!valor) {
+    return null;
+  }
+
+  const fecha = new Date(valor + 'T00:00:00');
+  if (isNaN(fecha.getTime())) {
+    return { fechaInvalida: true };
+  }
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  return fecha < hoy ? { fechaNoPasada: true } : null;
 }
