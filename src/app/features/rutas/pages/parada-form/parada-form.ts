@@ -22,7 +22,7 @@ export class ParadaForm {
 
   readonly form = this.fb.group({
     codigo: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]{1,20}$/i)]],
-    nombre: ['', [Validators.required, Validators.pattern(/^[\p{L}\s.'-]+$/u)]],
+    nombre: ['', [Validators.required, Validators.maxLength(100), Validators.pattern(/^[\p{L}\p{N}\s.'-]+$/u)]],
     direccion: ['', [Validators.pattern(/^[\p{L}\p{N}\s.,#'-]*$/u)]],
     ubicacion_referencia: ['', [Validators.pattern(/^[\p{L}\p{N}\s.,'\u00a0"-]*$/u)]],
   });

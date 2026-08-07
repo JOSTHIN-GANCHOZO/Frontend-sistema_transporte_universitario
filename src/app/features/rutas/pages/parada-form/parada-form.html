@@ -50,7 +50,9 @@
             {{
               form.controls.nombre.hasError('required')
                 ? 'El nombre es obligatorio.'
-                : 'El nombre no debe contener números ni símbolos.'
+                : form.controls.nombre.hasError('maxlength')
+                  ? 'El nombre no debe superar los 100 caracteres.'
+                  : 'El nombre solo admite letras, números, puntos y guiones.'
             }}
           </span>
         }
