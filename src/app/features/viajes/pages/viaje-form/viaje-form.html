@@ -21,6 +21,7 @@
           id="fecha"
           type="date"
           formControlName="fecha"
+          [min]="fechaMinima"
           placeholder="AAAA-MM-DD"
         />
         @if (mostrarError('fecha')) {

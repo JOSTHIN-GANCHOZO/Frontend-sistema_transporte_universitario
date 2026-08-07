@@ -31,6 +31,7 @@ export class ViajeForm implements OnInit {
   readonly esEdicion = signal(false);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly fechaMinima = this.fechaHoyIso();
 
   readonly autobuses = signal<Autobus[]>([]);
   readonly conductores = signal<Conductor[]>([]);
@@ -155,6 +156,13 @@ export class ViajeForm implements OnInit {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  private fechaHoyIso(): string {
+    const hoy = new Date();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    return `${hoy.getFullYear()}-${mes}-${dia}`;
   }
 }
 
