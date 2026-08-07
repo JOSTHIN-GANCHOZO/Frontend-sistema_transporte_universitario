@@ -1,0 +1,341 @@
+<section class="dash">
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando resumen del panel…</div>
+  } @else {
+    <header class="dash__hero">
+      <div class="dash__hero-inner">
+        <div class="dash__avatar">{{ inicial() }}</div>
+        <div>
+          <p class="dash__hero-kicker">Panel de control</p>
+          <h1 class="dash__hero-title">
+            Hola, {{ usuario()?.nombres ?? 'invitado' }}
+          </h1>
+          <p class="dash__hero-sub">
+            @if (esAdministrador()) {
+              Resumen operativo de la flota y los servicios.
+            } @else {
+              Tus viajes y reservas, todo en un vistazo.
+            }
+            {{ fechaTexto }}
+          </p>
+        </div>
+      </div>
+      <div class="dash__hero-actions">
+        @if (esAdministrador()) {
+          @if (esAdminPrincipal()) {
+            <a class="btn btn--accent" routerLink="/main/viajes/nuevo">+ Nuevo viaje</a>
+          }
+          <a class="btn btn--ghost" routerLink="/main/viajes">Ver viajes</a>
+        } @else {
+          <a class="btn btn--accent" routerLink="/main/viajes">Reservar asiento</a>
+        }
+      </div>
+    </header>
+
+    @if (esAdministrador()) {
+      <div class="dash__stats">
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="19" r="2.5" />
+              <path d="M6 16.5V13a6 6 0 0 1 6-6h3" />
+              <path d="m13 5 2 2-2 2" />
+              <circle cx="18" cy="6" r="2.5" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Viajes activos</span>
+            <strong class="dash__stat-value">{{ viajesActivos() }}</strong>
+            <span class="dash__stat-meta">{{ viajesProgramados() }} programados</span>
+          </div>
+        </article>
+
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="3.5" width="16" height="13" rx="2" />
+              <path d="M4 9.5h16" />
+              <circle cx="8" cy="18.5" r="1.5" />
+              <circle cx="16" cy="18.5" r="1.5" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Flota</span>
+            <strong class="dash__stat-value">{{ flotaTotal() }}</strong>
+            <span class="dash__stat-meta">{{ autobusesDisponibles() }} disponibles</span>
+          </div>
+        </article>
+
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Mantenimientos</span>
+            <strong class="dash__stat-value">{{ mantenimientosActivos() }}</strong>
+            <span class="dash__stat-meta">en curso o pendientes</span>
+          </div>
+        </article>
+
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="7" r="3" />
+              <path d="M2.5 20c0-3.7 2.9-6.5 6.5-6.5s6.5 2.8 6.5 6.5" />
+              <path d="M16 4.4a3.2 3.2 0 0 1 0 5.2" />
+              <path d="M17.5 13.6c2.5.4 4.7 3 4.5 6.4" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Usuarios activos</span>
+            <strong class="dash__stat-value">{{ usuariosActivos() }}</strong>
+            <span class="dash__stat-meta">{{ totalConductores() }} conductores</span>
+          </div>
+        </article>
+      </div>
+
+    <section class="dash__chips">
+        <span class="dash__chip">
+          <span class="dash__chip-dot dash__chip-dot--success"></span>
+          Reservas confirmadas
+          <strong>{{ reservasConfirmadas() }}</strong>
+        </span>
+        <span class="dash__chip">
+          <span class="dash__chip-dot dash__chip-dot--info"></span>
+          Reservas utilizadas
+          <strong>{{ reservasUtilizadas() }}</strong>
+        </span>
+        <span class="dash__chip">
+          <span class="dash__chip-dot dash__chip-dot--primary"></span>
+          Rutas
+          <strong>{{ totalRutas() }}</strong>
+        </span>
+        <span class="dash__chip">
+          <span class="dash__chip-dot dash__chip-dot--warning"></span>
+          Autobuses en mantenimiento
+          <strong>{{ autobusesEnMantenimiento() }}</strong>
+        </span>
+      </section>
+
+      <section class="dash__grid">
+        <article class="card dash__panel">
+          <header class="dash__panel-header">
+            <h2 class="dash__panel-title">Estado de la flota</h2>
+            <a class="dash__panel-link" routerLink="/main/autobuses">Ver autobuses</a>
+          </header>
+          @if (flotaBarras().length === 0) {
+            <p class="dash__empty">No hay autobuses registrados.</p>
+          } @else {
+            <div class="dash__bars">
+              @for (barra of flotaBarras(); track barra.estado) {
+                <div class="dash__bar">
+                  <div class="dash__bar-head">
+                    <span>{{ barra.etiqueta }}</span>
+                    <strong>{{ barra.valor }}</strong>
+                  </div>
+                  <div class="dash__bar-track">
+                    <span
+                      class="dash__bar-fill dash__bar-fill--{{ barra.clase }}"
+                      [style.width.%]="porcentajeFlota(barra.valor)"
+                    ></span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </article>
+
+        <article class="card dash__panel">
+          <header class="dash__panel-header">
+            <h2 class="dash__panel-title">Mantenimientos en curso</h2>
+            <a class="dash__panel-link" routerLink="/main/mantenimientos">Ver todos</a>
+          </header>
+          @if (mantenimientosEnCurso().length === 0) {
+            <p class="dash__empty">Sin mantenimientos activos.</p>
+          } @else {
+            <ul class="dash__list">
+              @for (mantenimiento of mantenimientosEnCurso(); track mantenimiento.id_mantenimiento) {
+                <li class="dash__list-item">
+                  <span class="dash__list-title">
+                    {{ nombreAutobusDeMantenimiento(mantenimiento) }}
+                  </span>
+                  <span class="dash__list-meta">
+                    {{ mantenimiento.tipo_mantenimiento ?? 'Mantenimiento' }}
+                  </span>
+                  <span [class]="estacionamientoBadge(mantenimiento.estado)">
+                    {{ mantenimiento.estado }}
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+        </article>
+
+        <article class="card dash__panel dash__panel--wide">
+          <header class="dash__panel-header">
+            <h2 class="dash__panel-title">Próximos viajes</h2>
+            <a class="dash__panel-link" routerLink="/main/viajes">Ver todos</a>
+          </header>
+          @if (viajesProximos().length === 0) {
+            <p class="dash__empty">No hay viajes programados.</p>
+          } @else {
+            <ul class="dash__list dash__list--viajes">
+              @for (viaje of viajesProximos(); track viaje.id_viaje) {
+                <li class="dash__list-item">
+                  <div class="dash__viaje-fecha">
+                    <strong>{{ viaje.fecha }}</strong>
+                    <span>{{ horaSalida(viaje.hora_salida) }} h</span>
+                  </div>
+                  <div class="dash__list-body">
+                    <span class="dash__list-title">{{ rutaOrigenDestino(viaje) }}</span>
+                    <span class="dash__list-meta">
+                      {{ nombreAutobus(viaje) }} · {{ viaje.cupos_disponibles ?? 0 }} cupos
+                    </span>
+                  </div>
+                  <span [class]="estadoBadge(viaje.estado)">{{ viaje.estado }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </article>
+
+        <article class="card dash__panel">
+          <header class="dash__panel-header">
+            <h2 class="dash__panel-title">Últimos usuarios</h2>
+            <a class="dash__panel-link" routerLink="/main/usuarios">Ver todos</a>
+          </header>
+          @if (ultimosUsuarios().length === 0) {
+            <p class="dash__empty">Sin usuarios registrados.</p>
+          } @else {
+            <ul class="dash__list">
+              @for (usuario of ultimosUsuarios(); track usuario.id_usuario) {
+                <li class="dash__list-item">
+                  <span class="dash__mini-avatar">{{ inicialUsuario(usuario) }}</span>
+                  <span class="dash__list-body">
+                    <span class="dash__list-title">{{ nombreUsuario(usuario) }}</span>
+                    <span class="dash__list-meta">{{ rolUsuario(usuario) }}</span>
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+        </article>
+      </section>
+    } @else {
+      <section class="dash__stats dash__stats--pasajero">
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5h16a1 1 0 0 1 1 1v2.2a3 3 0 0 0 0 5.6V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.2a3 3 0 0 0 0-5.6V6a1 1 0 0 1 1-1Z" />
+              <path d="M13 8v8" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Mis reservas</span>
+            <strong class="dash__stat-value">{{ totalMisReservas() }}</strong>
+          </div>
+        </article>
+
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="19" r="2.5" />
+              <path d="M6 16.5V13a6 6 0 0 1 6-6h3" />
+              <path d="m13 5 2 2-2 2" />
+              <circle cx="18" cy="6" r="2.5" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Próxima salida</span>
+            @if (proximaSalida()) {
+              <strong class="dash__stat-value dash__stat-value--small">{{ proximaSalida()?.fecha }}</strong>
+              <span class="dash__stat-meta">{{ horaSalida(proximaSalida()?.hora_salida) }} h · {{ rutaOrigenDestino(proximaSalida()!) }}</span>
+            } @else {
+              <strong class="dash__stat-value dash__stat-value--small">Sin viajes</strong>
+              <span class="dash__stat-meta">No hay salidas programadas</span>
+            }
+          </div>
+        </article>
+
+        <article class="dash__stat">
+          <div class="dash__stat-icon dash__stat-icon--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="19" r="3" />
+              <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+              <circle cx="18" cy="5" r="3" />
+            </svg>
+          </div>
+          <div class="dash__stat-body">
+            <span class="dash__stat-label">Viajes disponibles</span>
+            <strong class="dash__stat-value">{{ viajesDisponibles().length }}</strong>
+            <span class="dash__stat-meta">con cupos abiertos</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="dash__grid">
+        <article class="card dash__panel">
+          <header class="dash__panel-header">
+            <h2 class="dash__panel-title">Próximos viajes disponibles</h2>
+            <a class="dash__panel-link" routerLink="/main/viajes">Ver todos</a>
+          </header>
+          @if (viajesDisponibles().length === 0) {
+            <p class="dash__empty">No hay viajes con cupos disponibles.</p>
+          } @else {
+            <ul class="dash__list dash__list--viajes">
+              @for (viaje of viajesDisponibles(); track viaje.id_viaje) {
+                <li class="dash__list-item">
+                  <div class="dash__viaje-fecha">
+                    <strong>{{ viaje.fecha }}</strong>
+                    <span>{{ horaSalida(viaje.hora_salida) }} h</span>
+                  </div>
+                  <div class="dash__list-body">
+                    <span class="dash__list-title">{{ rutaOrigenDestino(viaje) }}</span>
+                    <span class="dash__list-meta">
+                      {{ nombreAutobus(viaje) }} · {{ viaje.cupos_disponibles ?? 0 }} cupos
+                    </span>
+                  </div>
+                  <a class="btn btn--primary btn--sm" [routerLink]="['/main/viajes', viaje.id_viaje]">
+                    Reservar
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        </article>
+
+        <article class="card dash__panel">
+          <header class="dash__panel-header">
+            <h2 class="dash__panel-title">Mis próximas reservas</h2>
+            <a class="dash__panel-link" routerLink="/main/reservas">Ver todas</a>
+          </header>
+          @if (misReservasProximas().length === 0) {
+            <p class="dash__empty">Aún no tienes reservas próximas.</p>
+          } @else {
+            <ul class="dash__list">
+              @for (reserva of misReservasProximas(); track reserva.id_reserva) {
+                <li class="dash__list-item">
+                  <div class="dash__viaje-fecha">
+                    <strong>{{ reserva.Viaje?.fecha }}</strong>
+                    <span>{{ horaSalida(reserva.Viaje?.hora_salida) }} h</span>
+                  </div>
+                  <div class="dash__list-body">
+                    <span class="dash__list-title">{{ nombreRutaDeReserva(reserva) }}</span>
+                    <span class="dash__list-meta">Asiento {{ reserva.numero_asiento }}</span>
+                  </div>
+                  <span [class]="estadoReservaBadge(reserva.estado)">{{ reserva.estado }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </article>
+      </section>
+    }
+  }
+</section>

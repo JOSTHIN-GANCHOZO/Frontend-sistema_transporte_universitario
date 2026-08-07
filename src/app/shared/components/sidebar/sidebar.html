@@ -13,6 +13,17 @@
   </div>
 
   <nav class="sidebar__nav">
+    <a
+      class="sidebar__link"
+      routerLink="/main/dashboard"
+      routerLinkActive="sidebar__link--active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      (click)="cerrarMenu()"
+      title="Inicio"
+    >
+      <app-icon nombre="inicio" />
+      <span class="sidebar__label">Inicio</span>
+    </a>
     @if (esAdministrador()) {
       <a
         class="sidebar__link"

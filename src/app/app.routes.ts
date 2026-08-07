@@ -27,7 +27,12 @@ export const routes: Routes = [
     component: MainLayout,
     canActivate: [authGuard, cambioPasswordGuard],
     children: [
-      { path: '', redirectTo: 'viajes', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./features/dashboard/dashboard.routes').then((m) => m.dashboardRoutes),
+      },
       {
         path: 'usuarios',
         canActivate: [roleGuard],
