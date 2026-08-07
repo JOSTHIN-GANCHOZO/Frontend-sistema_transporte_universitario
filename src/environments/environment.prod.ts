@@ -1,3 +1,5 @@
 export const environment = {
-  apiUrl: 'http://localhost:3000/api',
+  // REEMPLAZA por la URL real del backend en Railway (sin la barra final).
+  // Ejemplo: 'https://backend-sistema-transporte.up.railway.app/api'
+  apiUrl: 'https://MI-BACKEND.up.railway.app/api',
 };
