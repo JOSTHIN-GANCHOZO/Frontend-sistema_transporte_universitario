@@ -1,0 +1,453 @@
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ============ HERO ============ */
+
+.dash__hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.75rem 2rem;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-raised);
+  position: relative;
+  overflow: hidden;
+}
+
+.dash__hero::after {
+  content: '';
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 163, 61, 0.25) 0%, transparent 70%);
+}
+
+.dash__hero-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dash__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.dash__hero-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.dash__hero-title {
+  margin: 0.15rem 0 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.dash__hero-sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dash__hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.btn--accent {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.btn--accent:hover {
+  background: color-mix(in srgb, var(--color-accent) 85%, white);
+}
+
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.btn--sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+}
+
+/* ============ TARJETAS DE MÉTRICAS ============ */
+
+.dash__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dash__stats--pasajero {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dash__stat {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text-secondary) 12%, transparent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.1rem;
+}
+
+.dash__stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dash__stat-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dash__stat-icon--primary {
+  background: color-mix(in srgb, var(--color-primary) 10%, white);
+  color: var(--color-primary);
+}
+
+.dash__stat-icon--warning {
+  background: color-mix(in srgb, var(--color-warning) 14%, white);
+  color: var(--color-warning);
+}
+
+.dash__stat-icon--info {
+  background: color-mix(in srgb, var(--color-info) 14%, white);
+  color: var(--color-info);
+}
+
+.dash__stat-icon--success {
+  background: color-mix(in srgb, var(--color-success) 14%, white);
+  color: var(--color-success);
+}
+
+.dash__stat-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash__stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.dash__stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.dash__stat-value--small {
+  font-size: 1.15rem;
+}
+
+.dash__stat-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+/* ============ CHIPS (admin) ============ */
+
+.dash__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.dash__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text-secondary) 12%, transparent);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.dash__chip strong {
+  color: var(--color-text);
+  font-size: 0.85rem;
+}
+
+.dash__chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dash__chip-dot--primary {
+  background: var(--color-primary);
+}
+
+.dash__chip-dot--success {
+  background: var(--color-success);
+}
+
+.dash__chip-dot--info {
+  background: var(--color-info);
+}
+
+.dash__chip-dot--warning {
+  background: var(--color-warning);
+}
+
+/* ============ PANELES ============ */
+
+.dash__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dash__panel {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash__panel--wide {
+  grid-column: span 2;
+}
+
+.dash__panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dash__panel-title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--color-accent);
+}
+
+.dash__panel-link {
+  font-size: 0.78rem;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.dash__panel-link:hover {
+  text-decoration: underline;
+}
+
+.dash__empty {
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* ============ BARRAS DE FLOTA ============ */
+
+.dash__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.dash__bar-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.3rem;
+}
+
+.dash__bar-head strong {
+  color: var(--color-text);
+}
+
+.dash__bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.dash__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.dash__bar-fill--success {
+  background: var(--color-success);
+}
+
+.dash__bar-fill--primary {
+  background: var(--color-primary);
+}
+
+.dash__bar-fill--info {
+  background: var(--color-info);
+}
+
+.dash__bar-fill--danger {
+  background: var(--color-danger);
+}
+
+/* ============ LISTAS ============ */
+
+.dash__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash__list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--color-bg);
+}
+
+.dash__list-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.dash__list--viajes .dash__list-item {
+  flex-wrap: wrap;
+}
+
+.dash__list-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.dash__list-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dash__list-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.dash__viaje-fecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--color-primary) 5%, white);
+  border-radius: 8px;
+  padding: 0.4rem 0.2rem;
+}
+
+.dash__viaje-fecha strong {
+  font-size: 0.72rem;
+  color: var(--color-primary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.dash__viaje-fecha span {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.dash__mini-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-accent) 22%, white);
+  flex-shrink: 0;
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 900px) {
+  .dash__stats,
+  .dash__stats--pasajero {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .dash__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash__panel--wide {
+    grid-column: auto;
+  }
+
+  .dash__stats,
+  .dash__stats--pasajero {
+    grid-template-columns: 1fr;
+  }
+
+  .dash__hero {
+    padding: 1.25rem;
+  }
+
+  .dash__hero-actions {
+    width: 100%;
+  }
+}

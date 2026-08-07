@@ -1,0 +1,84 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">{{ esEdicion() ? 'Editar mantenimiento' : 'Nuevo mantenimiento' }}</h1>
+    <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    @if (loading()) {
+      <div class="form__loading">Cargando…</div>
+    }
+
+    <div class="form__grid">
+      <div class="form__field">
+        <label class="form__label" for="id_autobus">Autobús *</label>
+        <select class="form__input" id="id_autobus" formControlName="id_autobus">
+          <option [ngValue]="null">Seleccione un autobús</option>
+          @for (bus of autobuses(); track bus.id_autobus) {
+            <option [value]="bus.id_autobus">{{ bus.numero_interno }} - {{ bus.placa }}</option>
+          }
+        </select>
+        @if (mostrarError('id_autobus')) {
+          <span class="form__error">Debe seleccionar un autobús.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="fecha_inicio">Fecha de inicio *</label>
+        <input class="form__input" id="fecha_inicio" type="date" formControlName="fecha_inicio" />
+        @if (mostrarError('fecha_inicio')) {
+          <span class="form__error">La fecha de inicio es obligatoria.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="fecha_fin">Fecha de fin</label>
+        <input class="form__input" id="fecha_fin" type="date" formControlName="fecha_fin" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="tipo_mantenimiento">Tipo de mantenimiento</label>
+        <input class="form__input" id="tipo_mantenimiento" formControlName="tipo_mantenimiento" placeholder="Ej: Preventivo, Correctivo" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="costo">Costo ($)</label>
+        <input class="form__input" id="costo" type="number" min="0" step="0.01" formControlName="costo" />
+        @if (mostrarError('costo')) {
+          <span class="form__error">El costo no puede ser negativo.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="estado">Estado *</label>
+        <select class="form__input" id="estado" formControlName="estado">
+          @for (estado of estadosMantenimiento; track estado) {
+            <option [value]="estado">{{ estado }}</option>
+          }
+        </select>
+        @if (mostrarAvisoOtrosMantenimientos()) {
+          <span class="form__error">
+            Este autobús tiene {{ otrosMantenimientosActivos() }} otro(s) mantenimiento(s) activo(s);
+            continuará en EN_MANTENIMIENTO hasta que se completen o cancelen.
+          </span>
+        }
+      </div>
+      
+      <div class="form__field form__field--full">
+        <label class="form__label" for="descripcion">Descripción</label>
+        <textarea class="form__input" id="descripcion" formControlName="descripcion" rows="3" placeholder="Detalles adicionales..."></textarea>
+      </div>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+      <button class="btn btn--primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Guardando…' : esEdicion() ? 'Guardar cambios' : 'Crear mantenimiento' }}
+      </button>
+    </div>
+  </form>
+</section>

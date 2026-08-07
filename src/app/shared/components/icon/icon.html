@@ -1,0 +1,74 @@
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  @switch (nombre()) {
+    @case ('usuarios') {
+      <circle cx="9" cy="7" r="3" />
+      <path d="M2.5 20c0-3.7 2.9-6.5 6.5-6.5s6.5 2.8 6.5 6.5" />
+      <path d="M16 4.4a3.2 3.2 0 0 1 0 5.2" />
+      <path d="M17.5 13.6c2.5.4 4.7 3 4.5 6.4" />
+    }
+    @case ('autobuses') {
+      <rect x="4" y="3.5" width="16" height="13" rx="2" />
+      <path d="M4 9.5h16" />
+      <path d="M8 3.5v6" />
+      <path d="M16 3.5v6" />
+      <circle cx="8" cy="18.5" r="1.5" />
+      <circle cx="16" cy="18.5" r="1.5" />
+    }
+    @case ('conductores') {
+      <circle cx="10" cy="7" r="3.5" />
+      <path d="M7 20c0-3.3 1.6-6 4.5-6 .9 0 1.8.3 2.6.7" />
+      <path d="m14 17 2 2 4-4" />
+    }
+    @case ('viajes') {
+      <circle cx="6" cy="19" r="2.5" />
+      <path d="M6 16.5V13a6 6 0 0 1 6-6h3" />
+      <path d="m13 5 2 2-2 2" />
+      <circle cx="18" cy="6" r="2.5" />
+    }
+    @case ('reservas') {
+      <path d="M4 5h16a1 1 0 0 1 1 1v2.2a3 3 0 0 0 0 5.6V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.2a3 3 0 0 0 0-5.6V6a1 1 0 0 1 1-1Z" />
+      <path d="M13 8v8" />
+    }
+    @case ('rutas') {
+      <circle cx="6" cy="19" r="3" />
+      <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+      <circle cx="18" cy="5" r="3" />
+    }
+    @case ('paradas') {
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    }
+    @case ('mantenimientos') {
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+    }
+    @case ('inicio') {
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" />
+    }
+    @case ('menu') {
+      <path d="M3 6h18" />
+      <path d="M3 12h18" />
+      <path d="M3 18h18" />
+    }
+    @case ('chevron-left') {
+      <path d="m15 18-6-6 6-6" />
+    }
+    @case ('chevron-right') {
+      <path d="m9 18 6-6-6-6" />
+    }
+    @case ('cerrar') {
+      <path d="M6 6l12 12" />
+      <path d="M18 6L6 18" />
+    }
+  }
+</svg>

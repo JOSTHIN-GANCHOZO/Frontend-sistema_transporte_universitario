@@ -1,1 +1,84 @@
-<p>autobus-form works!</p>
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">{{ esEdicion() ? 'Editar autobús' : 'Nuevo autobús' }}</h1>
+    <button class="btn btn--secondary" type="button" (click)="volver()">Volver</button>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  <form class="form__card form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    @if (loading()) {
+      <div class="form__loading">Cargando…</div>
+    }
+
+    <div class="form__grid">
+      <div class="form__field">
+        <label class="form__label" for="placa">Placa *</label>
+        <input class="form__input" id="placa" formControlName="placa" />
+        @if (mostrarError('placa')) {
+          <span class="form__error">La placa es obligatoria.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="numero_interno">Número interno *</label>
+        <input class="form__input" id="numero_interno" formControlName="numero_interno" />
+        @if (mostrarError('numero_interno')) {
+          <span class="form__error">El número interno es obligatorio.</span>
+        }
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="marca">Marca</label>
+        <input class="form__input" id="marca" formControlName="marca" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="modelo">Modelo</label>
+        <input class="form__input" id="modelo" formControlName="modelo" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="anio">Año</label>
+        <input class="form__input" id="anio" type="number" min="1990" max="2100" formControlName="año" />
+      </div>
+
+      <div class="form__field">
+        <label class="form__label" for="capacidad_maxima">Capacidad máxima *</label>
+        <input
+          class="form__input"
+          id="capacidad_maxima"
+          type="number"
+          min="1"
+          formControlName="capacidad_maxima"
+        />
+        @if (mostrarError('capacidad_maxima')) {
+          <span class="form__error">
+            {{
+              form.controls.capacidad_maxima.hasError('required')
+                ? 'La capacidad máxima es obligatoria.'
+                : 'La capacidad debe ser al menos 1.'
+            }}
+          </span>
+        }
+      </div>
+
+      @if (esEdicion()) {
+        <div class="form__field">
+          <span class="form__label">Estado actual</span>
+          <span [class]="estadoBadge()">{{ estadoActual() }}</span>
+          <small class="form__hint">El estado se gestiona automáticamente con los mantenimientos.</small>
+        </div>
+      }
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--secondary" type="button" (click)="volver()">Cancelar</button>
+      <button class="btn btn--primary" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Guardando…' : esEdicion() ? 'Guardar cambios' : 'Crear autobús' }}
+      </button>
+    </div>
+  </form>
+</section>

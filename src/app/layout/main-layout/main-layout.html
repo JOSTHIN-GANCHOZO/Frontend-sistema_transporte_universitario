@@ -1,1 +1,7 @@
-<p>main-layout works!</p>
+<app-sidebar [abierto]="sidebarAbierto()" (navegado)="cerrarSidebar()" />
+<div class="main">
+  <app-navbar (menuClick)="alternarSidebar()" />
+  <main class="main__content">
+    <router-outlet />
+  </main>
+</div>

@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConductorList } from './conductor-list';
@@ -9,6 +11,7 @@ describe('ConductorList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ConductorList],
+      providers: [provideHttpClient(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConductorList);

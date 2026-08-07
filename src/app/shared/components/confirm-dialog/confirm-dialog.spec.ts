@@ -13,6 +13,8 @@ describe('ConfirmDialog', () => {
 
     fixture = TestBed.createComponent(ConfirmDialog);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('titulo', 'Título de prueba');
+    fixture.componentRef.setInput('mensaje', 'Mensaje de prueba');
     await fixture.whenStable();
   });
 

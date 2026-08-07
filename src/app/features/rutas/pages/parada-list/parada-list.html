@@ -1,0 +1,64 @@
+<section class="page">
+  <header class="page__header">
+    <h1 class="page__title">Paradas</h1>
+    @if (esAdminPrincipal()) {
+      <a class="btn btn--primary" routerLink="nuevo">+ Nueva parada</a>
+    }
+  </header>
+
+  @if (error()) {
+    <div class="alert alert--danger">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="empty-state">Cargando paradas…</div>
+  } @else if (paradas().length === 0) {
+    <div class="empty-state">No hay paradas registradas.</div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Referencia</th>
+            <th class="table__acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (parada of paradas(); track parada.id_parada) {
+            <tr>
+              <td>{{ parada.codigo }}</td>
+              <td>{{ parada.nombre }}</td>
+              <td>{{ parada.direccion ?? '—' }}</td>
+              <td>{{ parada.ubicacion_referencia ?? '—' }}</td>
+              <td class="table__acciones">
+                @if (esAdminPrincipal()) {
+                  <a class="btn btn--link" [routerLink]="[parada.id_parada]">Editar</a>
+                  <button class="btn btn--danger-soft" type="button" (click)="pedirEliminar(parada)">
+                    Eliminar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (dialogoVisible() && paradaAEliminar()) {
+  <app-confirm-dialog
+    titulo="Eliminar parada"
+    [mensaje]="
+      '¿Estás seguro de eliminar la parada ' +
+      (paradaAEliminar()?.nombre ?? '') +
+      '? Esta acción no se puede deshacer.'
+    "
+    textoConfirmar="Eliminar"
+    (confirmado)="confirmarEliminacion()"
+    (cancelado)="cancelarEliminacion()"
+  />
+}
