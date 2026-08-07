@@ -77,13 +77,13 @@
           id="costo"
           type="number"
           min="0"
-          max="1000000"
+          max="10000"
           step="0.01"
           formControlName="costo"
           placeholder="Ej: 250.50"
         />
         @if (mostrarError('costo')) {
-          <span class="form__error">El costo debe estar entre 0 y 1'000,000 $.</span>
+          <span class="form__error">El costo debe estar entre 0 y 10,000 $.</span>
         }
       </div>
 

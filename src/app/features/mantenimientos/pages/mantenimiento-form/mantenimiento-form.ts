@@ -33,7 +33,7 @@ export class MantenimientoForm implements OnInit {
     fecha_fin: [''],
     tipo_mantenimiento: ['', [Validators.pattern(/^[\p{L}\s.'-]*$/u)]],
     descripcion: ['', [Validators.maxLength(500)]],
-    costo: [null as number | null, [Validators.min(0), Validators.max(1000000)]],
+    costo: [null as number | null, [Validators.min(0), Validators.max(10000)]],
     estado: ['PENDIENTE' as EstadoMantenimiento, Validators.required],
     id_autobus: [null as number | null, Validators.required]
   });
