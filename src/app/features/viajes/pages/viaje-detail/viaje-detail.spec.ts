@@ -1,11 +1,14 @@
 import { provideHttpClient } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Auth } from '../../../../core/services/auth';
 import { Usuario } from '../../../usuarios/models/usuario.model';
 import { Viaje } from '../../models/viaje.model';
 import { ViajeDetail } from './viaje-detail';
+
+const API = 'http://localhost:3000/api';
 
 const viajeProgramado: Viaje = {
   id_viaje: 1,
@@ -70,15 +73,17 @@ describe('ViajeDetail', () => {
   let component: ViajeDetail;
   let fixture: ComponentFixture<ViajeDetail>;
   let auth: Auth;
+  let http: HttpTestingController;
 
   beforeEach(async () => {
     localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [ViajeDetail],
-      providers: [provideHttpClient(), provideRouter([])],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     auth = TestBed.inject(Auth);
+    http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(ViajeDetail);
     component = fixture.componentInstance;
     await fixture.whenStable();
@@ -212,6 +217,73 @@ describe('ViajeDetail', () => {
       expect(reserva?.id_reserva).toBe(42);
       expect(reserva?.numero_asiento).toBe(3);
       expect(reserva?.estado).toBe('CONFIRMADA');
+    });
+  });
+
+  describe('modo administrador (taquilla)', () => {
+    let adminComponent: ViajeDetail;
+    let adminHttp: HttpTestingController;
+
+    beforeEach(async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [ViajeDetail],
+        providers: [
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          provideRouter([]),
+          {
+            provide: ActivatedRoute,
+            useValue: { snapshot: { paramMap: convertToParamMap({ id: '1' }) } },
+          },
+        ],
+      }).compileComponents();
+
+      auth = TestBed.inject(Auth);
+      adminHttp = TestBed.inject(HttpTestingController);
+      auth.usuarioActual.set(admin);
+      adminComponent = TestBed.createComponent(ViajeDetail).componentInstance;
+    });
+
+    it('carga la lista de pasajeros disponibles', () => {
+      adminHttp.expectOne(`${API}/viajes/1`).flush(viajeProgramado);
+      adminHttp.expectOne(`${API}/usuarios`).flush([pasajero, admin]);
+
+      expect(adminComponent.pasajeros().length).toBe(1);
+      expect(adminComponent.pasajeros()[0].id_usuario).toBe(5);
+    });
+
+    it('envía id_usuario al reservar en nombre de un pasajero', () => {
+      adminHttp.expectOne(`${API}/viajes/1`).flush(viajeProgramado);
+      adminHttp.expectOne(`${API}/usuarios`).flush([pasajero]);
+
+      adminComponent.seleccionarAsiento(4);
+      adminComponent.destinatarioId.set('5');
+      adminComponent.onSubmit();
+
+      const req = adminHttp.expectOne(`${API}/reservas`);
+      expect(req.request.body).toEqual({ id_viaje: 1, numero_asiento: 4, id_usuario: 5 });
+      req.flush({
+        mensaje: 'Reserva creada y confirmada exitosamente.',
+        reserva: { id_reserva: 42, numero_asiento: 4, estado: 'CONFIRMADA', id_viaje: 1 },
+      });
+      adminHttp.expectOne(`${API}/viajes/1`).flush(viajeProgramado);
+    });
+
+    it('no envía id_usuario al reservar para sí mismo', () => {
+      adminHttp.expectOne(`${API}/viajes/1`).flush(viajeProgramado);
+      adminHttp.expectOne(`${API}/usuarios`).flush([pasajero]);
+
+      adminComponent.seleccionarAsiento(4);
+      adminComponent.onSubmit();
+
+      const req = adminHttp.expectOne(`${API}/reservas`);
+      expect(req.request.body).toEqual({ id_viaje: 1, numero_asiento: 4 });
+      req.flush({
+        mensaje: 'Reserva creada y confirmada exitosamente.',
+        reserva: { id_reserva: 43, numero_asiento: 4, estado: 'CONFIRMADA', id_viaje: 1 },
+      });
+      adminHttp.expectOne(`${API}/viajes/1`).flush(viajeProgramado);
     });
   });
 });

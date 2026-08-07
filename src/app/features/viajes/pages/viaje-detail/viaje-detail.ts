@@ -2,8 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { Auth } from '../../../../core/services/auth';
 import { Reserva } from '../../../reservas/models/reserva.model';
 import { ReservaService } from '../../../reservas/services/reserva';
+import { Usuario } from '../../../usuarios/models/usuario.model';
+import { UsuarioService } from '../../../usuarios/services/usuario';
 import { Viaje } from '../../models/viaje.model';
 import { ViajeService } from '../../services/viaje';
 
@@ -18,6 +21,8 @@ export class ViajeDetail {
   private readonly router = inject(Router);
   private readonly viajeService = inject(ViajeService);
   private readonly reservaService = inject(ReservaService);
+  private readonly auth = inject(Auth);
+  private readonly usuarioService = inject(UsuarioService);
 
   readonly viaje = signal<Viaje | null>(null);
   readonly loading = signal(true);
@@ -29,6 +34,10 @@ export class ViajeDetail {
 
   readonly asientoSeleccionado = signal<number | null>(null);
   readonly intentoEnvio = signal(false);
+
+  readonly esAdministrativo = computed(() => this.auth.esAdministrador());
+  readonly pasajeros = signal<Usuario[]>([]);
+  readonly destinatarioId = signal<string>('');
 
   readonly asientos = computed(() => {
     const max = this.viaje()?.Autobus?.capacidad_maxima ?? 0;
@@ -46,7 +55,27 @@ export class ViajeDetail {
       this.loading.set(false);
       return;
     }
+    if (this.esAdministrativo()) {
+      this.cargarPasajeros();
+    }
     this.cargar(Number(id));
+  }
+
+  private cargarPasajeros(): void {
+    this.usuarioService.obtenerUsuarios().subscribe({
+      next: (usuarios) => {
+        this.pasajeros.set(
+          usuarios
+            .filter(
+              (usuario) =>
+                usuario.fecha_eliminacion == null &&
+                (usuario.tipo_usuario === 'ESTUDIANTE' || usuario.tipo_usuario === 'DOCENTE')
+            )
+            .sort((a, b) => `${a.nombres} ${a.apellidos}`.localeCompare(`${b.nombres} ${b.apellidos}`))
+        );
+      },
+      error: () => this.pasajeros.set([]),
+    });
   }
 
   private cargar(id: number): void {
@@ -105,28 +134,33 @@ export class ViajeDetail {
       return;
     }
 
+    const payload: Partial<Reserva> = {
+      id_viaje: viaje.id_viaje,
+      numero_asiento: numeroAsiento,
+    };
     const idViaje = viaje.id_viaje;
+    const destinatario = Number(this.destinatarioId());
+    if (this.esAdministrativo() && Number.isInteger(destinatario) && destinatario > 0) {
+      payload.id_usuario = destinatario;
+    }
+
     this.guardando.set(true);
     this.reservaError.set(null);
 
-    this.reservaService
-      .crear({
-        id_viaje: idViaje,
-        numero_asiento: numeroAsiento,
-      })
-      .subscribe({
-        next: (respuesta) => {
-          this.guardando.set(false);
-          this.reservaCreada.set(respuesta.reserva);
-          this.asientoSeleccionado.set(null);
-          this.intentoEnvio.set(false);
-          this.cargar(idViaje);
-        },
-        error: (err) => {
-          this.guardando.set(false);
-          this.reservaError.set(err.error?.mensaje ?? 'No se pudo crear la reserva.');
-        },
-      });
+    this.reservaService.crear(payload).subscribe({
+      next: (respuesta) => {
+        this.guardando.set(false);
+        this.reservaCreada.set(respuesta.reserva);
+        this.asientoSeleccionado.set(null);
+        this.destinatarioId.set('');
+        this.intentoEnvio.set(false);
+        this.cargar(idViaje);
+      },
+      error: (err) => {
+        this.guardando.set(false);
+        this.reservaError.set(err.error?.mensaje ?? 'No se pudo crear la reserva.');
+      },
+    });
   }
 
   nombreRuta(viaje: Viaje): string {
@@ -135,6 +169,10 @@ export class ViajeDetail {
 
   nombreAutobus(viaje: Viaje): string {
     return viaje.Autobus?.placa ?? `Autobús #${viaje.id_autobus}`;
+  }
+
+  nombrePasajero(usuario: Usuario): string {
+    return `${usuario.nombres} ${usuario.apellidos}`.trim();
   }
 
   nombreConductor(viaje: Viaje): string {

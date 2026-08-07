@@ -127,8 +127,31 @@
       @if (puedeReservar()) {
         <form class="form__card form" (ngSubmit)="onSubmit()">
           <div class="form__grid">
+            @if (esAdministrativo()) {
+              <div class="form__field form__field--full">
+                <span class="form__label">Reservar para</span>
+                <select
+                  class="form__input"
+                  id="destinatario"
+                  name="destinatario"
+                  [ngModel]="destinatarioId()"
+                  (ngModelChange)="destinatarioId.set($event)"
+                >
+                  <option value="">Yo (reserva propia)</option>
+                  @for (pasajero of pasajeros(); track pasajero.id_usuario) {
+                    <option [value]="pasajero.id_usuario">
+                      {{ nombrePasajero(pasajero) }} — {{ pasajero.identificacion }}
+                    </option>
+                  }
+                </select>
+                <small class="form__hint">
+                  Como administrador también puedes reservar en nombre de un pasajero.
+                </small>
+              </div>
+            }
+
             <div class="form__field form__field--full">
-              <span class="form__label">Selecciona tu asiento *</span>
+              <span class="form__label">Selecciona {{ esAdministrativo() ? 'el' : 'tu' }} asiento *</span>
               <div class="asientos">
                 @for (asiento of asientos(); track asiento.numero) {
                   <button
