@@ -1,0 +1,5 @@
+deploy:
+  build:
+    - npm install
+    - npm run build
+  start: npx serve -s dist/frontend_transporte_universitario/browser -l $PORT
