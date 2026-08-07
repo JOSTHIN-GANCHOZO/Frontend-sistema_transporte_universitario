@@ -23,7 +23,7 @@
   </aside>
 
   <main class="login__panel">
-    <form class="login__card" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="login__card" [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
       <div class="login__mobile-logo">
         <span class="login__logo-mark">U</span>
         <span class="login__logo-text">Unibus</span>
@@ -43,7 +43,7 @@
         type="email"
         formControlName="correo"
         placeholder="tu@universidad.edu"
-        autocomplete="username"
+        autocomplete="off"
       />
       @if (form.controls.correo.invalid && form.controls.correo.touched) {
         <span class="login__field-error">
@@ -63,7 +63,7 @@
           [type]="mostrarPassword() ? 'text' : 'password'"
           formControlName="password"
           placeholder="••••••••"
-          autocomplete="current-password"
+          autocomplete="new-password"
         />
         <button
           class="login__eye"

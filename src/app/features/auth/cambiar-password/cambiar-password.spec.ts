@@ -49,43 +49,64 @@ describe('CambiarPassword', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('onSubmit', () => {
-    it('valida mínima longitud y confirmación coincidente', () => {
-      component.form.controls.password.setValue('abc');
-      component.form.controls.confirmacion.setValue('abc');
+  describe('validarPasswordFuerte', () => {
+    it('rechaza contraseñas cortas, sin 2 números o sin punto', () => {
+      const casosInvalidos = ['abc', 'clave123', 'abcdefgh', 'abcd1234', 'ab12cd.'];
+      for (const valor of casosInvalidos) {
+        component.form.controls.password.setValue(valor);
+        expect(component.form.controls.password.invalid).toBe(true);
+      }
+    });
 
-      expect(component.form.controls.password.invalid).toBe(true);
-      component.form.controls.password.setValue('clave123');
-      component.form.controls.confirmacion.setValue('clave124');
+    it('acepta contraseñas con 8+ caracteres, 2+ números y un punto', () => {
+      component.form.controls.password.setValue('clave123.');
+      expect(component.form.controls.password.valid).toBe(true);
+    });
+
+    it('detecta la confirmación no coincidente aunque la contraseña sea válida', () => {
+      component.form.controls.password.setValue('clave123.');
+      component.form.controls.confirmacion.setValue('clave124.');
       expect(component.form.invalid).toBe(true);
     });
 
-    it('actualiza la contraseña y navega a /main', () => {
+    it('expone el contador de caracteres y números en vivo', () => {
+      component.form.controls.password.setValue('clave12');
+
+      expect(component.longitud()).toBe(7);
+      expect(component.cantidadNumeros()).toBe(2);
+      expect(component.tienePunto()).toBe(false);
+    });
+  });
+
+  describe('onSubmit', () => {
+    it('actualiza la contraseña, limpia los campos y navega a /main', () => {
       const auth = TestBed.inject(Auth);
       const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       vi.spyOn(auth, 'actualizarPassword').mockReturnValue(of({ mensaje: 'ok' }));
 
-      component.form.controls.password.setValue('clave123');
-      component.form.controls.confirmacion.setValue('clave123');
+      component.form.controls.password.setValue('clave123.');
+      component.form.controls.confirmacion.setValue('clave123.');
       component.onSubmit();
 
-      expect(auth.actualizarPassword).toHaveBeenCalledWith(5, 'clave123');
+      expect(auth.actualizarPassword).toHaveBeenCalledWith(5, 'clave123.');
       expect(navigateSpy).toHaveBeenCalledWith(['/main']);
+      expect(component.form.controls.password.value).toBe('');
+      expect(component.form.controls.confirmacion.value).toBe('');
     });
 
     it('muestra error y no navega cuando falla el servidor', () => {
       const auth = TestBed.inject(Auth);
       const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       vi.spyOn(auth, 'actualizarPassword').mockReturnValue(
-        throwError(() => ({ error: { mensaje: 'La contraseña debe tener al menos 6 caracteres.' } }))
+        throwError(() => ({ error: { mensaje: 'La contraseña debe incluir al menos un punto (.).' } }))
       );
 
-      component.form.controls.password.setValue('clave123');
-      component.form.controls.confirmacion.setValue('clave123');
+      component.form.controls.password.setValue('clave123.');
+      component.form.controls.confirmacion.setValue('clave123.');
       component.onSubmit();
 
       expect(navigateSpy).not.toHaveBeenCalled();
-      expect(component.error()).toContain('al menos 6 caracteres');
+      expect(component.error()).toContain('punto');
     });
   });
 

@@ -214,6 +214,9 @@
   color: var(--color-danger);
 }
 
+.login__password-hint{display:flex;flex-wrap:wrap;gap:0 1rem;margin:0 0 .9rem;font-size:.75rem;color:var(--color-muted,#6b7280)}
+.login__ok{color:var(--color-success,#16a34a);font-weight:600}
+
 .login__button {
   width: 100%;
   margin-top: 0.75rem;
