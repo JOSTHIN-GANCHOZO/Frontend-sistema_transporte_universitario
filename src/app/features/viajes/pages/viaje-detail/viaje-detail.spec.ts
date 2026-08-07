@@ -96,11 +96,11 @@ describe('ViajeDetail', () => {
       expect(component.puedeReservar()).toBe(true);
     });
 
-    it('bloquea la reserva a un administrador', () => {
+    it('permite reservar a un administrador', () => {
       auth.usuarioActual.set(admin);
       component.viaje.set(viajeProgramado);
 
-      expect(component.puedeReservar()).toBe(false);
+      expect(component.puedeReservar()).toBe(true);
     });
 
     it('bloquea la reserva cuando el viaje no está PROGRAMADO', () => {

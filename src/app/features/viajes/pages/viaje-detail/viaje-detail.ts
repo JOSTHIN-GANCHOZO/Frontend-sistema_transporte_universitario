@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Auth } from '../../../../core/services/auth';
 import { Reserva } from '../../../reservas/models/reserva.model';
 import { ReservaService } from '../../../reservas/services/reserva';
 import { Viaje } from '../../models/viaje.model';
@@ -19,7 +18,6 @@ export class ViajeDetail {
   private readonly router = inject(Router);
   private readonly viajeService = inject(ViajeService);
   private readonly reservaService = inject(ReservaService);
-  private readonly auth = inject(Auth);
 
   readonly viaje = signal<Viaje | null>(null);
   readonly loading = signal(true);
@@ -69,7 +67,7 @@ export class ViajeDetail {
 
   puedeReservar(): boolean {
     const viaje = this.viaje();
-    if (!viaje || this.auth.esAdministrador()) {
+    if (!viaje) {
       return false;
     }
     return viaje.estado === 'PROGRAMADO' && (viaje.cupos_disponibles ?? 0) > 0;
