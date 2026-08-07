@@ -29,7 +29,13 @@
 
       <div class="form__field">
         <label class="form__label" for="fecha_inicio">Fecha de inicio *</label>
-        <input class="form__input" id="fecha_inicio" type="date" formControlName="fecha_inicio" />
+        <input
+          class="form__input"
+          id="fecha_inicio"
+          type="date"
+          formControlName="fecha_inicio"
+          placeholder="AAAA-MM-DD"
+        />
         @if (mostrarError('fecha_inicio')) {
           <span class="form__error">La fecha de inicio es obligatoria.</span>
         }
@@ -37,19 +43,47 @@
 
       <div class="form__field">
         <label class="form__label" for="fecha_fin">Fecha de fin</label>
-        <input class="form__input" id="fecha_fin" type="date" formControlName="fecha_fin" />
+        <input
+          class="form__input"
+          id="fecha_fin"
+          type="date"
+          formControlName="fecha_fin"
+          placeholder="AAAA-MM-DD"
+        />
+        @if (mostrarError('fecha_fin')) {
+          <span class="form__error">La fecha de fin no puede ser anterior a la fecha de inicio.</span>
+        }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="tipo_mantenimiento">Tipo de mantenimiento</label>
-        <input class="form__input" id="tipo_mantenimiento" formControlName="tipo_mantenimiento" placeholder="Ej: Preventivo, Correctivo" />
+        <input
+          class="form__input"
+          id="tipo_mantenimiento"
+          formControlName="tipo_mantenimiento"
+          maxlength="50"
+          (input)="soloTipoMantenimiento()"
+          placeholder="Ej: Preventivo"
+        />
+        @if (mostrarError('tipo_mantenimiento')) {
+          <span class="form__error">El tipo de mantenimiento no debe contener números ni símbolos.</span>
+        }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="costo">Costo ($)</label>
-        <input class="form__input" id="costo" type="number" min="0" step="0.01" formControlName="costo" />
+        <input
+          class="form__input"
+          id="costo"
+          type="number"
+          min="0"
+          max="1000000"
+          step="0.01"
+          formControlName="costo"
+          placeholder="Ej: 250.50"
+        />
         @if (mostrarError('costo')) {
-          <span class="form__error">El costo no puede ser negativo.</span>
+          <span class="form__error">El costo debe estar entre 0 y 1'000,000 $.</span>
         }
       </div>
 

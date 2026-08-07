@@ -16,33 +16,90 @@
     <div class="form__grid">
       <div class="form__field">
         <label class="form__label" for="placa">Placa *</label>
-        <input class="form__input" id="placa" formControlName="placa" />
+        <input
+          class="form__input"
+          id="placa"
+          formControlName="placa"
+          maxlength="10"
+          (input)="soloCodigo('placa')"
+          placeholder="Ej: ABC-1234"
+        />
         @if (mostrarError('placa')) {
-          <span class="form__error">La placa es obligatoria.</span>
+          <span class="form__error">
+            {{
+              form.controls.placa.hasError('required')
+                ? 'La placa es obligatoria.'
+                : 'La placa solo admite letras, números y guiones (máx. 10).'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="numero_interno">Número interno *</label>
-        <input class="form__input" id="numero_interno" formControlName="numero_interno" />
+        <input
+          class="form__input"
+          id="numero_interno"
+          formControlName="numero_interno"
+          maxlength="10"
+          (input)="soloCodigo('numero_interno')"
+          placeholder="Ej: B-010"
+        />
         @if (mostrarError('numero_interno')) {
-          <span class="form__error">El número interno es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.numero_interno.hasError('required')
+                ? 'El número interno es obligatorio.'
+                : 'Solo se permiten letras, números y guiones (máx. 10).'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="marca">Marca</label>
-        <input class="form__input" id="marca" formControlName="marca" />
+        <input
+          class="form__input"
+          id="marca"
+          formControlName="marca"
+          maxlength="30"
+          (input)="soloLetras('marca')"
+          placeholder="Ej: Marcopolo"
+        />
+        @if (mostrarError('marca')) {
+          <span class="form__error">La marca no debe contener números.</span>
+        }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="modelo">Modelo</label>
-        <input class="form__input" id="modelo" formControlName="modelo" />
+        <input
+          class="form__input"
+          id="modelo"
+          formControlName="modelo"
+          maxlength="50"
+          (input)="soloTexto('modelo')"
+          placeholder="Ej: Granbird"
+        />
+        @if (mostrarError('modelo')) {
+          <span class="form__error">El modelo solo admite letras, números, puntos y guiones.</span>
+        }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="anio">Año</label>
-        <input class="form__input" id="anio" type="number" min="1990" max="2100" formControlName="año" />
+        <input
+          class="form__input"
+          id="anio"
+          type="number"
+          min="1980"
+          max="2100"
+          formControlName="año"
+          placeholder="Ej: 2022"
+        />
+        @if (mostrarError('año')) {
+          <span class="form__error">El año debe estar entre 1980 y 2100.</span>
+        }
       </div>
 
       <div class="form__field">
@@ -52,14 +109,16 @@
           id="capacidad_maxima"
           type="number"
           min="1"
+          max="200"
           formControlName="capacidad_maxima"
+          placeholder="Ej: 45"
         />
         @if (mostrarError('capacidad_maxima')) {
           <span class="form__error">
             {{
               form.controls.capacidad_maxima.hasError('required')
                 ? 'La capacidad máxima es obligatoria.'
-                : 'La capacidad debe ser al menos 1.'
+                : 'La capacidad debe estar entre 1 y 200.'
             }}
           </span>
         }

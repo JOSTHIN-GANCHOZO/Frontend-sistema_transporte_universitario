@@ -22,12 +22,12 @@ export class ConductorForm {
   readonly error = signal<string | null>(null);
 
   readonly form = this.fb.group({
-    identificacion: ['', Validators.required],
-    nombres: ['', Validators.required],
-    apellidos: ['', Validators.required],
-    telefono: [''],
-    correo: ['', Validators.email],
-    numero_licencia: ['', Validators.required],
+    identificacion: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    nombres: ['', [Validators.required, Validators.pattern(/^\D+$/)]],
+    apellidos: ['', [Validators.required, Validators.pattern(/^\D+$/)]],
+    telefono: ['', [Validators.pattern(/^\d{10}$/)]],
+    correo: ['', [Validators.email]],
+    numero_licencia: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]{1,15}$/i)]],
     fecha_vencimiento_licencia: ['', [Validators.required, fechaFutura]],
   });
 
@@ -110,6 +110,34 @@ export class ConductorForm {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  soloNumeros(campo: 'identificacion' | 'telefono'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/\D/g, '').slice(0, 10) ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloLetras(campo: 'nombres' | 'apellidos'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/[0-9]/g, '') ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloLicencia(campo: 'numero_licencia'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor =
+      control.value?.toString().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 15) ?? '';
+    control.setValue(valor, { emitEvent: false });
   }
 }
 

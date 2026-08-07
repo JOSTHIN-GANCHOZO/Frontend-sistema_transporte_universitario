@@ -21,10 +21,10 @@ export class ParadaForm {
   readonly error = signal<string | null>(null);
 
   readonly form = this.fb.group({
-    codigo: ['', Validators.required],
-    nombre: ['', Validators.required],
-    direccion: [''],
-    ubicacion_referencia: [''],
+    codigo: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]{1,20}$/i)]],
+    nombre: ['', [Validators.required, Validators.pattern(/^[\p{L}\s.'-]+$/u)]],
+    direccion: ['', [Validators.pattern(/^[\p{L}\p{N}\s.,#'-]*$/u)]],
+    ubicacion_referencia: ['', [Validators.pattern(/^[\p{L}\p{N}\s.,'\u00a0"-]*$/u)]],
   });
 
   constructor() {
@@ -100,5 +100,20 @@ export class ParadaForm {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  soloCodigo(): void {
+    const control = this.form.controls.codigo;
+    const valor = control.value?.toString().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 20) ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloTexto(campo: 'nombre' | 'direccion' | 'ubicacion_referencia'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/[^\p{L}\p{N}\s.,#'-]/gu, '') ?? '';
+    control.setValue(valor, { emitEvent: false });
   }
 }

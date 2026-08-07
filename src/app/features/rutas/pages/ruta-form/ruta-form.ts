@@ -32,11 +32,11 @@ export class RutaForm {
   readonly errorParadas = signal<string | null>(null);
 
   readonly form = this.fb.group({
-    codigo: ['', Validators.required],
-    nombre: ['', Validators.required],
-    origen: ['', Validators.required],
-    destino: ['', Validators.required],
-    distancia_estimada: [null as number | null, [Validators.min(0)]],
+    codigo: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]{1,20}$/i)]],
+    nombre: ['', [Validators.required, Validators.pattern(/^[\p{L}\s.'-]+$/u)]],
+    origen: ['', [Validators.required, Validators.pattern(/^[\p{L}\p{N}\s.,'-]+$/u)]],
+    destino: ['', [Validators.required, Validators.pattern(/^[\p{L}\p{N}\s.,'-]+$/u)]],
+    distancia_estimada: [null as number | null, [Validators.min(0), Validators.max(10000)]],
     duracion_aproximada: [''],
   });
 
@@ -213,5 +213,20 @@ export class RutaForm {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  soloCodigo(): void {
+    const control = this.form.controls.codigo;
+    const valor = control.value?.toString().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 20) ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloTexto(campo: 'nombre' | 'origen' | 'destino'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/[^\p{L}\p{N}\s.,'-]/gu, '') ?? '';
+    control.setValue(valor, { emitEvent: false });
   }
 }

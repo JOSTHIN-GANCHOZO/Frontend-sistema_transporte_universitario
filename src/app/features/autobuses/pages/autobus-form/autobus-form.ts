@@ -23,12 +23,12 @@ export class AutobusForm {
   readonly estadoActual = signal('DISPONIBLE');
 
   readonly form = this.fb.group({
-    placa: ['', Validators.required],
-    numero_interno: ['', Validators.required],
-    marca: [''],
-    modelo: [''],
-    año: [null as number | null],
-    capacidad_maxima: [null as number | null, [Validators.required, Validators.min(1)]],
+    placa: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]{3,10}$/i)]],
+    numero_interno: ['', [Validators.required, Validators.pattern(/^[A-Z0-9-]{1,10}$/i)]],
+    marca: ['', [Validators.pattern(/^[\p{L}\s'.-]*$/u)]],
+    modelo: ['', [Validators.pattern(/^[\p{L}\p{N}\s.-]*$/u)]],
+    año: [null as number | null, [Validators.min(1980), Validators.max(2100)]],
+    capacidad_maxima: [null as number | null, [Validators.required, Validators.min(1), Validators.max(200)]],
   });
 
   constructor() {
@@ -124,5 +124,34 @@ export class AutobusForm {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  soloCodigo(campo: 'placa' | 'numero_interno'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor =
+      control.value?.toString().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 10) ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloLetras(campo: 'marca'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor = control.value?.toString().replace(/\d/g, '') ?? '';
+    control.setValue(valor, { emitEvent: false });
+  }
+
+  soloTexto(campo: 'modelo'): void {
+    const control = this.form.get(campo);
+    if (!control) {
+      return;
+    }
+    const valor =
+      control.value?.toString().replace(/[^\p{L}\p{N}\s.-]/gu, '').slice(0, 50) ?? '';
+    control.setValue(valor, { emitEvent: false });
   }
 }

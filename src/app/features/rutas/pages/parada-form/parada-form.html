@@ -16,23 +16,59 @@
     <div class="form__grid">
       <div class="form__field">
         <label class="form__label" for="codigo">Código *</label>
-        <input class="form__input" id="codigo" formControlName="codigo" maxlength="20" />
+        <input
+          class="form__input"
+          id="codigo"
+          formControlName="codigo"
+          maxlength="20"
+          (input)="soloCodigo()"
+          placeholder="Ej: PAR-001"
+        />
         @if (mostrarError('codigo')) {
-          <span class="form__error">El código es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.codigo.hasError('required')
+                ? 'El código es obligatorio.'
+                : 'El código solo admite letras, números y guiones (máx. 20).'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="nombre">Nombre *</label>
-        <input class="form__input" id="nombre" formControlName="nombre" maxlength="100" />
+        <input
+          class="form__input"
+          id="nombre"
+          formControlName="nombre"
+          maxlength="100"
+          (input)="soloTexto('nombre')"
+          placeholder="Ej: Terminal Norte"
+        />
         @if (mostrarError('nombre')) {
-          <span class="form__error">El nombre es obligatorio.</span>
+          <span class="form__error">
+            {{
+              form.controls.nombre.hasError('required')
+                ? 'El nombre es obligatorio.'
+                : 'El nombre no debe contener números ni símbolos.'
+            }}
+          </span>
         }
       </div>
 
       <div class="form__field">
         <label class="form__label" for="direccion">Dirección</label>
-        <input class="form__input" id="direccion" formControlName="direccion" maxlength="200" />
+        <input
+          class="form__input"
+          id="direccion"
+          formControlName="direccion"
+          maxlength="200"
+          (input)="soloTexto('direccion')"
+          placeholder="Ej: Av. 6 de Diciembre y Eloy Alfaro"
+        />
+        @if (mostrarError('direccion')) {
+          <span class="form__error">La dirección contiene caracteres no permitidos.</span>
+        }
       </div>
 
       <div class="form__field">
@@ -42,7 +78,12 @@
           id="ubicacion_referencia"
           formControlName="ubicacion_referencia"
           maxlength="200"
+          (input)="soloTexto('ubicacion_referencia')"
+          placeholder="Ej: Frente al edificio de Ciencias"
         />
+        @if (mostrarError('ubicacion_referencia')) {
+          <span class="form__error">La ubicación contiene caracteres no permitidos.</span>
+        }
       </div>
     </div>
 

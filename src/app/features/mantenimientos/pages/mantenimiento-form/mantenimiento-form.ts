@@ -31,12 +31,31 @@ export class MantenimientoForm implements OnInit {
   readonly form = this.fb.group({
     fecha_inicio: ['', Validators.required],
     fecha_fin: [''],
-    tipo_mantenimiento: [''],
-    descripcion: [''],
-    costo: [null as number | null, [Validators.min(0)]],
+    tipo_mantenimiento: ['', [Validators.pattern(/^[\p{L}\s.'-]*$/u)]],
+    descripcion: ['', [Validators.maxLength(500)]],
+    costo: [null as number | null, [Validators.min(0), Validators.max(1000000)]],
     estado: ['PENDIENTE' as EstadoMantenimiento, Validators.required],
     id_autobus: [null as number | null, Validators.required]
   });
+
+  constructor() {
+    this.form.controls.fecha_inicio.valueChanges.subscribe(() => this.validarFechas());
+    this.form.controls.fecha_fin.valueChanges.subscribe(() => this.validarFechas());
+  }
+
+  private validarFechas(): void {
+    const inicio = this.form.controls.fecha_inicio.value;
+    const fin = this.form.controls.fecha_fin.value;
+    const controlFin = this.form.controls.fecha_fin;
+
+    if (fin && inicio && fin < inicio) {
+      controlFin.setErrors({ fechaFinInvalida: true });
+    } else if (controlFin.hasError('fechaFinInvalida')) {
+      controlFin.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      const { fechaFinInvalida: _eliminado, ...restantes } = controlFin.errors ?? {};
+      controlFin.setErrors(Object.keys(restantes).length > 0 ? restantes : null);
+    }
+  }
 
   ngOnInit() {
     this.cargarAutobuses();
@@ -166,5 +185,11 @@ export class MantenimientoForm implements OnInit {
   mostrarError(campo: string): boolean {
     const control = this.form.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  soloTipoMantenimiento(): void {
+    const control = this.form.controls.tipo_mantenimiento;
+    const valor = control.value?.toString().replace(/[^\p{L}\s.'-]/gu, '').slice(0, 50) ?? '';
+    control.setValue(valor, { emitEvent: false });
   }
 }
